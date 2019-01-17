@@ -39,6 +39,7 @@ import org.eclipse.scout.orga.client.booking.BookingForm.MainBox.BookingBox.Time
 import org.eclipse.scout.orga.client.document.AbstractDocumentTable;
 import org.eclipse.scout.orga.client.user.UserLookupCall;
 import org.eclipse.scout.orga.shared.booking.BookingFormData;
+import org.eclipse.scout.orga.shared.booking.BookingFormParam;
 import org.eclipse.scout.orga.shared.booking.BookingFormData.DocumentTable;
 import org.eclipse.scout.orga.shared.booking.CreateBookingPermission;
 import org.eclipse.scout.orga.shared.booking.IBookingService;
@@ -47,6 +48,25 @@ import org.eclipse.scout.orga.shared.booking.UpdateBookingPermission;
 @ClassId("d0e79008-7b79-42f2-a1b7-196ef2d3a3a8")
 @FormData(value = BookingFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class BookingForm extends AbstractForm {
+
+	private BookingFormParam param;
+
+	public BookingForm() {
+		super();
+	}
+
+	public BookingForm(BookingFormParam param) {
+		this();
+		this.param = param;
+	}
+
+	public BookingFormParam getParam() {
+		return param;
+	}
+
+	public void setParam(BookingFormParam param) {
+		this.param = param;
+	}
 
 	@Override
 	protected String getConfiguredTitle() {
@@ -223,7 +243,7 @@ public class BookingForm extends AbstractForm {
 					@Override
 					protected Date execValidateValue(Date rawValue) {
 						Date to = getDateToField().getValue();
-						if (to != null && rawValue.after(to)) {
+						if (to != null && rawValue != null && rawValue.after(to)) {
 							throw new VetoException(TEXTS.get("DateFromViolation"));
 						}
 						return super.execValidateValue(rawValue);
@@ -245,7 +265,7 @@ public class BookingForm extends AbstractForm {
 					@Override
 					protected Date execValidateValue(Date rawValue) {
 						Date from = getDateField().getValue();
-						if (from != null && rawValue.before(from)) {
+						if (from != null && rawValue != null && rawValue.before(from)) {
 							throw new VetoException(TEXTS.get("DateToViolation"));
 						}
 						return super.execValidateValue(rawValue);
@@ -412,7 +432,13 @@ public class BookingForm extends AbstractForm {
 			setEnabledPermission(new CreateBookingPermission());
 			BookingFormData formData = new BookingFormData();
 			exportFormData(formData);
-			importFormData(BEANS.get(IBookingService.class).load(formData));
+			formData = BEANS.get(IBookingService.class).load(formData);
+			BookingFormParam param = ((BookingForm) this.getForm()).getParam();
+			if (param != null) {
+				formData.getDateFrom().setValue(param.getDateFrom());
+				formData.getDateTo().setValue(param.getDateTo());
+			}
+			importFormData(formData);
 		}
 
 		@Override

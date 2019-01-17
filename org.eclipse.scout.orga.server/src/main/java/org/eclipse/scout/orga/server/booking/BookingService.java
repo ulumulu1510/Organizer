@@ -1,10 +1,7 @@
 package org.eclipse.scout.orga.server.booking;
 
-import org.eclipse.scout.rt.platform.BEANS;
-import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
-import org.jooq.Field;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Date;
+import java.util.stream.Stream;
 
 import org.eclipse.scout.orga.database.or.core.tables.Booking;
 import org.eclipse.scout.orga.database.or.core.tables.records.BookingRecord;
@@ -17,6 +14,11 @@ import org.eclipse.scout.orga.shared.booking.BookingTablePageData;
 import org.eclipse.scout.orga.shared.booking.BookingTablePageData.BookingTableRowData;
 import org.eclipse.scout.orga.shared.booking.IBookingService;
 import org.eclipse.scout.orga.shared.document.IDocumentService;
+import org.eclipse.scout.rt.platform.BEANS;
+import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
+import org.jooq.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BookingService extends AbstractBaseService<Booking, BookingRecord>  implements IBookingService {
 
@@ -35,7 +37,6 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	public Logger getLogger() {
 		return LoggerFactory.getLogger(BookingService.class);
 	}
-
 
 	@Override
 	public BookingTablePageData getBookingTableData(SearchFilter filter) {
@@ -121,6 +122,15 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 		row.setNote(booking.getNote());
 		row.setUser(booking.getUserId());
 		row.setActive(booking.getActive());
+	}
+
+	public Stream<BookingRecord> getBookingsInInterval(Date minDate, Date maxDate) {
+		return getContext()
+				.selectFrom(getTable())
+				.where(
+						getTable().DATE_FROM.gt(minDate),
+						getTable().DATE_TO.lt(maxDate))
+				.fetchStream();
 	}
 
 }

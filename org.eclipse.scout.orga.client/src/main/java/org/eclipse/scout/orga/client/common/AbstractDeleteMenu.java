@@ -27,8 +27,8 @@ public abstract class AbstractDeleteMenu extends AbstractMenu {
 		return isOwner() || BEANS.get(IAccessControlService.class).checkPermission(new DeleteEntityPermission());
 	}
 
-	private boolean isOwner() {
-		return getOwner().getSelectedValues()
+	protected boolean isOwner() {
+		return getOwner() != null && getOwner().getSelectedValues()
 				.stream()
 				.allMatch(userId -> ClientSession.get().getUserId().equals(userId));
 	}

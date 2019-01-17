@@ -8,6 +8,7 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.text.TEXTS;
 
 import org.eclipse.scout.orga.client.booking.BookingTablePage;
+import org.eclipse.scout.orga.client.calendar.CalendarPage;
 import org.eclipse.scout.orga.shared.Icons;
 
 /**
@@ -30,6 +31,7 @@ public class WorkOutline extends AbstractOutline {
 	protected void execCreateChildPages(List<IPage<?>> pageList) {
 		super.execCreateChildPages(pageList);
 
+		pageList.add(new CalendarPage());
 		pageList.add(new BookingTablePage());
 	}
 }
