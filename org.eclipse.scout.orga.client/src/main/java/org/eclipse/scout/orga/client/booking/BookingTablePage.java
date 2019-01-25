@@ -6,6 +6,7 @@ import org.eclipse.scout.rt.client.ui.basic.table.ITableRow;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractDateTimeColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractTimeColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.IOutline;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
@@ -78,6 +79,10 @@ public class BookingTablePage extends AbstractPageWithTable<BookingTable> {
 			return getColumnSet().getColumnByClass(DateToColumn.class);
 		}
 
+		public TimeDeltaColumn getTimeDeltaColumn() {
+			return getColumnSet().getColumnByClass(TimeDeltaColumn.class);
+		}
+
 		public NoteColumn getNoteColumn() {
 			return getColumnSet().getColumnByClass(NoteColumn.class);
 		}
@@ -148,6 +153,19 @@ public class BookingTablePage extends AbstractPageWithTable<BookingTable> {
 			@Override
 			protected String getConfiguredHeaderText() {
 				return TEXTS.get("Note");
+			}
+
+			@Override
+			protected int getConfiguredWidth() {
+				return 200;
+			}
+		}
+
+		@Order(6500)
+		public class TimeDeltaColumn extends AbstractTimeColumn {
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("Duration");
 			}
 
 			@Override

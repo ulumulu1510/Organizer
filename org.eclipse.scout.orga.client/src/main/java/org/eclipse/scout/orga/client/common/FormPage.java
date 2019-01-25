@@ -1,17 +1,17 @@
-package org.eclipse.scout.orga.client.calendar;
+package org.eclipse.scout.orga.client.common;
 
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithNodes;
+import org.eclipse.scout.rt.client.ui.form.AbstractForm;
 import org.eclipse.scout.rt.client.ui.form.IForm;
 
-public class CalendarPage extends AbstractPageWithNodes {
-
-	  private final Class<CalendarForm> calendarFormClass;
+public class FormPage<T extends AbstractForm> extends AbstractPageWithNodes {
+	  private final Class<T> formClass;
 	  private final String text;
 
-	  public CalendarPage() {
-	    super(false, CalendarForm.class.getName());
-	    calendarFormClass = CalendarForm.class;
-	    text = "Calendar";
+	  public FormPage(Class<T> calendarFormClass, String text) {
+	    super(false, calendarFormClass.getName());
+	    this.formClass = calendarFormClass;
+	    this.text = text;
 	    callInitializer();
 	  }
 
@@ -27,7 +27,7 @@ public class CalendarPage extends AbstractPageWithNodes {
 
 	  @Override
 	  protected Class<? extends IForm> getConfiguredDetailForm() {
-	    return calendarFormClass;
+	    return formClass;
 	  }
 
 	  @Override
@@ -43,8 +43,8 @@ public class CalendarPage extends AbstractPageWithNodes {
 	  }
 
 	  @Override
-	  public CalendarForm getDetailForm() {
-	    return (CalendarForm) super.getDetailForm();
+	  public AbstractForm getDetailForm() {
+	    return (AbstractForm) super.getDetailForm();
 	  }
 
 	  @Override

@@ -61,6 +61,7 @@ public class BookingTablePageData extends AbstractTablePageData {
 		public static final String dateTo = "dateTo";
 		public static final String description = "description";
 		public static final String note = "note";
+		public static final String timeDelta = "timeDelta";
 		public static final String active = "active";
 		public static final String user = "user";
 		private String m_id;
@@ -68,6 +69,7 @@ public class BookingTablePageData extends AbstractTablePageData {
 		private Date m_dateTo;
 		private String m_description;
 		private String m_note;
+		private Date m_timeDelta;
 		private Boolean m_active;
 		private String m_user;
 
@@ -109,6 +111,14 @@ public class BookingTablePageData extends AbstractTablePageData {
 
 		public void setNote(String newNote) {
 			m_note = newNote;
+		}
+
+		public Date getTimeDelta() {
+			return m_timeDelta;
+		}
+
+		public void setTimeDelta(Date newTimeDelta) {
+			m_timeDelta = newTimeDelta;
 		}
 
 		public Boolean getActive() {

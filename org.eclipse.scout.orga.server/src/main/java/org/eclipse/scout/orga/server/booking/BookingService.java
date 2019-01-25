@@ -15,6 +15,7 @@ import org.eclipse.scout.orga.shared.booking.BookingTablePageData.BookingTableRo
 import org.eclipse.scout.orga.shared.booking.IBookingService;
 import org.eclipse.scout.orga.shared.document.IDocumentService;
 import org.eclipse.scout.rt.platform.BEANS;
+import org.eclipse.scout.rt.platform.util.date.DateUtility;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -119,6 +120,10 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 		row.setDescription(booking.getDescription());
 		row.setDateFrom(booking.getDateFrom());
 		row.setDateTo(booking.getDateTo());
+		if (booking.getDateFrom() != null && booking.getDateTo() != null) {
+			long timeDelta = booking.getDateTo().getTime() - booking.getDateFrom().getTime();
+			row.setTimeDelta(new Date(timeDelta));
+		}
 		row.setNote(booking.getNote());
 		row.setUser(booking.getUserId());
 		row.setActive(booking.getActive());
