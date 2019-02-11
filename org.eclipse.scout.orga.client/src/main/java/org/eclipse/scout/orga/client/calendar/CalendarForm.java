@@ -115,7 +115,7 @@ public class CalendarForm extends AbstractForm {
 				public class BookingProvider extends AbstractCalendarItemProvider {
 					@Override
 					protected void execLoadItemsInBackground(IClientSession session, Date minDate, Date maxDate, Set<ICalendarItem> result) {
-						result.addAll(BEANS.get(ICalendarService.class).loadPaymentsInInterval(minDate, maxDate));
+						result.addAll(BEANS.get(ICalendarService.class).loadBookingsInInterval(minDate, maxDate));
 					}
 
 					@Order(2000)
@@ -132,7 +132,7 @@ public class CalendarForm extends AbstractForm {
 
 						@Override
 						protected void execAction() {
-							startNewPaymentSelectedDate();
+							startNewBookingSelectedDate();
 						}
 					}
 
@@ -201,11 +201,11 @@ public class CalendarForm extends AbstractForm {
 
 			@Override
 			protected void execAction() {
-				startNewPaymentSelectedDate();
+				startNewBookingSelectedDate();
 			}
 		}
 
-		private void startNewPaymentSelectedDate() {
+		private void startNewBookingSelectedDate() {
 			BookingFormParam param = createFormParamFromSelectedDate();
 			BookingForm bookingForm = new BookingForm(param);
 			bookingForm.addFormListener(new CalendarFormListener());

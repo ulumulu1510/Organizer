@@ -66,12 +66,13 @@ public class BookingFormData extends AbstractFormData {
 		private static final long serialVersionUID = 1L;
 	}
 
-	@ClassId("942bf118-5638-4639-9188-cdb4116a997d-formdata")
+	@ClassId("d3deb50b-1579-48e2-a893-0d626005fbff-formdata")
 	public static class DateFrom extends AbstractValueFieldData<Date> {
 
 		private static final long serialVersionUID = 1L;
 	}
 
+	@ClassId("8a5d83be-c984-47b8-a256-e5f5d5a508e0-formdata")
 	public static class DateTo extends AbstractValueFieldData<Date> {
 
 		private static final long serialVersionUID = 1L;

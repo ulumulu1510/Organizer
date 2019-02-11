@@ -10,5 +10,5 @@ import org.eclipse.scout.rt.shared.services.common.calendar.ICalendarItem;
 @TunnelToServer
 public interface ICalendarService extends IService {
 
-	Set<ICalendarItem> loadPaymentsInInterval(Date minDate, Date maxDate);
+	Set<ICalendarItem> loadBookingsInInterval(Date minDate, Date maxDate);
 }

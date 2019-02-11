@@ -6,7 +6,6 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Date;
 
-import org.eclipse.scout.orga.client.booking.BookingForm.MainBox.BookingBox.TimeBox;
 import org.eclipse.scout.orga.client.common.AbstractVisField;
 import org.eclipse.scout.orga.client.user.UserLookupCall;
 import org.eclipse.scout.orga.client.vis.VisForm.MainBox.OptionsBox;
@@ -60,10 +59,6 @@ public class VisForm extends AbstractForm{
 
 	public OptionsBox getOptionsBox() {
 		return getFieldByClass(OptionsBox.class);
-	}
-
-	public TimeBox getTimeBox() {
-		return getFieldByClass(TimeBox.class);
 	}
 
 	public DateFromField getDateFromField() {
@@ -136,7 +131,7 @@ public class VisForm extends AbstractForm{
 			}
 
 			@Order(1000)
-			@ClassId("942bf118-5638-4639-9188-cdb4116a997d")
+			@ClassId("d7d287f6-f504-4db3-9b3a-763bdbce88db")
 			public class DateFromField extends AbstractDateField {
 				@Override
 				protected String getConfiguredLabel() {
@@ -160,6 +155,7 @@ public class VisForm extends AbstractForm{
 			}
 
 			@Order(2000)
+			@ClassId("c7526b36-2499-48a7-9621-7ecdbd8da9d9")
 			public class DateToField extends AbstractDateField {
 				@Override
 				protected String getConfiguredLabel() {

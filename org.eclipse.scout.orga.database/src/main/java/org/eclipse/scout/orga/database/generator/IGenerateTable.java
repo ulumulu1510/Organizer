@@ -1,6 +1,7 @@
 package org.eclipse.scout.orga.database.generator;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import org.jooq.DataType;
 import org.jooq.SQLDialect;
@@ -34,6 +35,7 @@ public interface IGenerateTable extends IDatabaseObject {
 	public static String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	public static final DataType<String> TYPE_TIMESTAMP = SQLDataType.VARCHAR.length(DEFAULT_TIMESTAMP_PATTERN.length());
 	public static final DataType<Date> TYPE_DATE = SQLDataType.DATE;
+	public static final DataType<Timestamp> TYPE_DATE_TIME = SQLDataType.TIMESTAMP;
 
 	public static final SQLDialect SQL_DIALECT = GeneratorApplication.DB_DIALECT;
 

@@ -52,10 +52,10 @@ public class DocumentService extends AbstractBaseService<Document, DocumentRecor
 	}
 
 	@Override
-	public DocumentTablePageData getDocumentTableData(SearchFilter filter, String paymentId) {
+	public DocumentTablePageData getDocumentTableData(SearchFilter filter, String bookingId) {
 		DocumentTablePageData pageData = new DocumentTablePageData();
 
-		forEachDocumentWithBookingId(paymentId, document -> {
+		forEachDocumentWithBookingId(bookingId, document -> {
 			DocumentTableRowData row = pageData.addRow();
 			row.setId(document.getId());
 			row.setName(document.getName());

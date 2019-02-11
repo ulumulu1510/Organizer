@@ -15,13 +15,13 @@ import org.eclipse.scout.rt.shared.services.common.calendar.ICalendarItem;
 public class CalendarService implements ICalendarService {
 
 	@Override
-	public Set<ICalendarItem> loadPaymentsInInterval(Date minDate, Date maxDate) {
+	public Set<ICalendarItem> loadBookingsInInterval(Date minDate, Date maxDate) {
 		return BEANS.get(BookingService.class).getBookingsInInterval(minDate, maxDate)
-				.map(this::paymentToCalenderItem)
+				.map(this::bookingToCalenderItem)
 				.collect(Collectors.toSet());
 	}
 
-	private ICalendarItem paymentToCalenderItem(BookingRecord booking) {
+	private ICalendarItem bookingToCalenderItem(BookingRecord booking) {
 		CalendarAppointment calendarAppointment = new CalendarAppointment(
 				booking.getId(),
 				booking.getUserId(),

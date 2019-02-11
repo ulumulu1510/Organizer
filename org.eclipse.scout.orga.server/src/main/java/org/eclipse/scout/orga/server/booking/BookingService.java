@@ -15,7 +15,6 @@ import org.eclipse.scout.orga.shared.booking.BookingTablePageData.BookingTableRo
 import org.eclipse.scout.orga.shared.booking.IBookingService;
 import org.eclipse.scout.orga.shared.document.IDocumentService;
 import org.eclipse.scout.rt.platform.BEANS;
-import org.eclipse.scout.rt.platform.util.date.DateUtility;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -32,7 +31,6 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	public Field<String> getIdColumn() {
 		return Booking.BOOKING.ID;
 	}
-
 
 	@Override
 	public Logger getLogger() {
@@ -53,9 +51,9 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	@Override
 	public BookingFormData load(BookingFormData formData) {
 		BookingRecord booking = getOrCreate(formData.getBookingId().getValue());
-        recordToFormData(formData, booking);
-        formData.getDocumentTable().setRows(BEANS.get(IDocumentService.class).getDocumentTableData(booking.getId()).getRows());
-        return formData;
+		recordToFormData(formData, booking);
+		formData.getDocumentTable().setRows(BEANS.get(IDocumentService.class).getDocumentTableData(booking.getId()).getRows());
+		return formData;
 	}
 
 	@Override
@@ -63,8 +61,8 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 		String bookingId = formData.getBookingId().getValue();
 		BookingRecord booking = getOrCreate(bookingId);
 		formDataToRecord(formData, booking);
-        store(booking.getId(), booking);
-        return formData;
+		store(booking.getId(), booking);
+		return formData;
 	}
 
 	@Override
@@ -80,17 +78,16 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	public BookingRecord getOrCreate(String bookingId) {
 		BookingRecord booking = get(bookingId);
 
-        if (booking != null) {
-            return booking;
-        }
+		if (booking != null) {
+			return booking;
+		}
 
-        booking = new BookingRecord();
-        booking.setId(TableUtility.createId());
-        booking.setActive(true);
-        booking.setUserId(ServerSession.get().getUserId());
-
-        return booking;
-    }
+		booking = new BookingRecord();
+		booking.setId(TableUtility.createId());
+		booking.setActive(true);
+		booking.setUserId(ServerSession.get().getUserId());
+		return booking;
+	}
 
 	private void formDataToRecord(BookingFormData formData, BookingRecord booking) {
 		if (booking != null && formData != null) {
