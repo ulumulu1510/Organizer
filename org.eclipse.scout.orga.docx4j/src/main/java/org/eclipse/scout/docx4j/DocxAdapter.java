@@ -75,7 +75,8 @@ import org.slf4j.LoggerFactory;
  * Adapter class for creating and manipulating docx documents. The adapter is
  * designed to be used directly or to subclass, if specific behavior is missing.
  * <p/>
- * <b>Note:</b> Programmatically inserting text into a document should always make use of
+ * <b>Note:</b> Programmatically inserting text into a document should always
+ * make use of
  * {@link #insertTextInParagraph(ObjectFactory, RPr, P, int, String)}.
  *
  * @since 1.0.0
@@ -94,24 +95,30 @@ public class DocxAdapter {
 
 	public static final String XPATH_PARAGRAPHS_WITH_DOCVARIABLE_INSTR_TEXT = "//w:p[//w:instrText[contains(.,'DOCVARIABLE')]]";
 
-	/** Pattern to match all unicode characters that are not valid according to the XML 1.0 specification. */
-	protected static final Pattern XML_INVALID_CHARACTERS = Pattern.compile("[^" + "\u0009\r\n" + "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]");
+	/**
+	 * Pattern to match all unicode characters that are not valid according to
+	 * the XML 1.0 specification.
+	 */
+	protected static final Pattern XML_INVALID_CHARACTERS = Pattern
+			.compile("[^" + "\u0009\r\n" + "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]");
 
 	private WordprocessingMLPackage m_package;
 	private File m_file;
 
 	/**
-	 * Creates an uninitialized docx adapter (used by subclasses the handle initialization manually).
+	 * Creates an uninitialized docx adapter (used by subclasses the handle
+	 * initialization manually).
 	 */
 	protected DocxAdapter() {
 	}
 
 	/**
-	 * Create a word adapter that either opens an existing document (when template=false) or creates a new document using
-	 * a template (when template=true).
+	 * Create a word adapter that either opens an existing document (when
+	 * template=false) or creates a new document using a template (when
+	 * template=true).
 	 *
 	 * @param file
-	 *          File to open
+	 *            File to open
 	 */
 	public DocxAdapter(File file) throws ProcessingException {
 		this(createPackageFromFile(file));
@@ -119,7 +126,8 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Protected constructor used for testing purposes or other constructors only.
+	 * Protected constructor used for testing purposes or other constructors
+	 * only.
 	 */
 	protected DocxAdapter(WordprocessingMLPackage wordMlPackage) {
 		m_package = wordMlPackage;
@@ -136,8 +144,7 @@ public class DocxAdapter {
 		// create new document
 		try {
 			return WordprocessingMLPackage.createPackage();
-		}
-		catch (Docx4JException e) {
+		} catch (Docx4JException e) {
 			throw new ProcessingException("Error creating an empty word package", e);
 		}
 	}
@@ -145,15 +152,17 @@ public class DocxAdapter {
 	/**
 	 * Creates a package based on the file provided.
 	 * <p>
-	 * If the file does not exist an exception is thrown. If the file size is 0, an empty document is created.
+	 * If the file does not exist an exception is thrown. If the file size is 0,
+	 * an empty document is created.
 	 *
 	 * @param file
-	 *          File
+	 *            File
 	 * @return Package
 	 * @throws ProcessingException
 	 */
 	protected static WordprocessingMLPackage createPackageFromFile(File file) throws ProcessingException {
-		Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
+		Docx4jProperties.getProperties()
+				.setProperty("docx4j.Log4j.Configurator.disabled", "true");
 
 		checkFile(file);
 
@@ -164,20 +173,21 @@ public class DocxAdapter {
 
 		try {
 			return WordprocessingMLPackage.load(file);
-		}
-		catch (Docx4JException e) {
+		} catch (Docx4JException e) {
 			if (!FileUtility.isZipFile(file)) {
-				throw new VetoException("The document " + file.getName() + " is not an Office Open XML document (docx).", e);
+				throw new VetoException(
+						"The document " + file.getName() + " is not an Office Open XML document (docx).", e);
 			}
 			throw new ProcessingException("unable to process word document", e);
 		}
 	}
 
 	/**
-	 * Checks if the provided file exists and can be read. Throws a processing exception otherwise.
+	 * Checks if the provided file exists and can be read. Throws a processing
+	 * exception otherwise.
 	 *
 	 * @param file
-	 *          File to check for
+	 *            File to check for
 	 * @throws ProcessingException
 	 */
 	protected static void checkFile(File file) throws ProcessingException {
@@ -203,12 +213,13 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Replaces a single word document variable. The formatting is expected to be done before calling this method Warning.
+	 * Replaces a single word document variable. The formatting is expected to
+	 * be done before calling this method Warning.
 	 *
 	 * @param name
-	 *          name of the document variable to be replaced
+	 *            name of the document variable to be replaced
 	 * @param value
-	 *          a string the document variable is replaced with
+	 *            a string the document variable is replaced with
 	 */
 	public void setField(String name, String value) throws ProcessingException {
 		if (m_package == null || StringUtility.isNullOrEmpty(name)) {
@@ -218,12 +229,13 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Replaces word document variables using the given map. Document variables that are not part of the map remain in the
-	 * document. Document variables may appear in the main document or in any header or footer (default, first, even,
-	 * odd).
+	 * Replaces word document variables using the given map. Document variables
+	 * that are not part of the map remain in the document. Document variables
+	 * may appear in the main document or in any header or footer (default,
+	 * first, even, odd).
 	 *
 	 * @param placeholderValues
-	 *          map with document variables
+	 *            map with document variables
 	 * @throws ProcessingException
 	 */
 	public void setFields(Map<String, String> originalPlaceholderValues) throws ProcessingException {
@@ -257,8 +269,10 @@ public class DocxAdapter {
 					String name = m.group(1);
 					if (placeholderValues.containsKey(name)) {
 						// remove doc variable-related children
-						int insertPoint = p.getContent().indexOf(complexField.getBeginR());
-						p.getContent().removeAll(complexField.getFieldDocumentNodes());
+						int insertPoint = p.getContent()
+								.indexOf(complexField.getBeginR());
+						p.getContent()
+								.removeAll(complexField.getFieldDocumentNodes());
 						// set new value
 						insertTextInParagraph(new ObjectFactory(), rpr, p, insertPoint, placeholderValues.get(name));
 						return true;
@@ -284,16 +298,20 @@ public class DocxAdapter {
 
 	protected String cleanPlaceholderValue(String value) {
 		if (value != null) {
-			value = XML_INVALID_CHARACTERS.matcher(value).replaceAll(" ");
+			value = XML_INVALID_CHARACTERS.matcher(value)
+					.replaceAll(" ");
 		}
 		return value;
 	}
 
 	/**
-	 * Transforms the given string into text and run objects and adds them to the given paragraph. Multiple paragraphs are
-	 * added if the text contains more than one line. The method falls-back to breaks, if paragraphs can not be created.
+	 * Transforms the given string into text and run objects and adds them to
+	 * the given paragraph. Multiple paragraphs are added if the text contains
+	 * more than one line. The method falls-back to breaks, if paragraphs can
+	 * not be created.
 	 * <p/>
-	 * <b>Example:</b> A string is inserted at the position marked with <em>insertion point</em>.
+	 * <b>Example:</b> A string is inserted at the position marked with
+	 * <em>insertion point</em>.
 	 *
 	 * <pre>
 	 * &lt;container&gt;
@@ -305,7 +323,8 @@ public class DocxAdapter {
 	 * &lt;/container&gt;
 	 * </pre>
 	 *
-	 * The result contains new paragraph nodes if the given text has more than one line. The original paragraph is reused.
+	 * The result contains new paragraph nodes if the given text has more than
+	 * one line. The original paragraph is reused.
 	 *
 	 * <pre>
 	 * &lt;container&gt;
@@ -328,32 +347,40 @@ public class DocxAdapter {
 	 * </pre>
 	 *
 	 * @param factory
-	 *          object factory docx4j elements are created with.
+	 *            object factory docx4j elements are created with.
 	 * @param runProperties
-	 *          run properties applied to every run created within this method.
+	 *            run properties applied to every run created within this
+	 *            method.
 	 * @param p
-	 *          paragraph the text is added to.
+	 *            paragraph the text is added to.
 	 * @param index
-	 *          index within the given paragraph at which the specified element is
-	 *          to be inserted
+	 *            index within the given paragraph at which the specified
+	 *            element is to be inserted
 	 * @param s
-	 *          text to be inserted at the given place
+	 *            text to be inserted at the given place
 	 */
 	protected void insertTextInParagraph(ObjectFactory factory, RPr runProperties, P p, int index, String s) {
 		insertTextInParagraph(factory, runProperties, p, index, s, false);
 	}
 
-	protected void insertTextInParagraph(ObjectFactory factory, RPr runProperties, P p, int index, String s, boolean enforceBreaks) {
+	protected void insertTextInParagraph(ObjectFactory factory, RPr runProperties, P p, int index, String s,
+			boolean enforceBreaks) {
 		if (StringUtility.getLineCount(s) == 1) {
 			// a) the text has only one line.
-			p.getContent().add(index, createTextRun(factory, runProperties, s));
+			p.getContent()
+					.add(index, createTextRun(factory, runProperties, s));
 			return;
 		}
 
-		// b) The text has more than one line, each of them is represented by a paragraph.
-		// 1. remove following-siblings from paragraph so that they can be added after the last line of the document variable
-		List<Object> followingSiblings = new ArrayList<Object>(p.getContent().subList(index, p.getContent().size()));
-		p.getContent().removeAll(followingSiblings);
+		// b) The text has more than one line, each of them is represented by a
+		// paragraph.
+		// 1. remove following-siblings from paragraph so that they can be added
+		// after the last line of the document variable
+		List<Object> followingSiblings = new ArrayList<Object>(p.getContent()
+				.subList(index, p.getContent()
+						.size()));
+		p.getContent()
+				.removeAll(followingSiblings);
 		boolean first = true;
 		P currentP = p;
 
@@ -362,63 +389,69 @@ public class DocxAdapter {
 			R run = createTextRun(factory, runProperties, line);
 			if (first) {
 				// the first run is just added in the existing paragraph.
-				currentP.getContent().add(run);
+				currentP.getContent()
+						.add(run);
 				first = false;
 				continue;
 			}
 
 			// 2.a create a new paragraph
-			// A paragraph can occur in different environments. The following are supported by this class:
+			// A paragraph can occur in different environments. The following
+			// are supported by this class:
 			// body (§17.2.2), ftr (§17.10.3), hdr (§17.10.4), tc (§17.4.66)
 			// The following are not supported:
-			// comment (§17.13.4.2), customXml (§17.5.1.6), endnote (§17.11.2), footnote (§17.11.10), sdtContent (§17.5.2.34)
-			if (!enforceBreaks
-					&& p.getParent() instanceof ContentAccessor
-					&& (p.getParent() instanceof Body
-							|| p.getParent() instanceof Ftr
-							|| p.getParent() instanceof Hdr
-							|| p.getParent() instanceof Tc
-							|| p.getParent() instanceof SdtContentBlock)) {
+			// comment (§17.13.4.2), customXml (§17.5.1.6), endnote (§17.11.2),
+			// footnote (§17.11.10), sdtContent (§17.5.2.34)
+			if (!enforceBreaks && p.getParent() instanceof ContentAccessor
+					&& (p.getParent() instanceof Body || p.getParent() instanceof Ftr || p.getParent() instanceof Hdr
+							|| p.getParent() instanceof Tc || p.getParent() instanceof SdtContentBlock)) {
 
 				P newP = factory.createP();
 				newP.setPPr(p.getPPr());
-				newP.getContent().add(run);
+				newP.getContent()
+						.add(run);
 
 				List<Object> parentContent = ((ContentAccessor) p.getParent()).getContent();
 				parentContent.add(parentContent.indexOf(currentP) + 1, newP);
 				newP.setParent(p.getParent());
 				currentP = newP;
-			}
-			else {
+			} else {
 				if (!enforceBreaks) {
 					LOG.warn("unsupported parent element for a paragraph: " + p.getParent());
 					// fall back and just add the run after a break in the last
 					// successfully added paragraph
 				}
 				Br br = factory.createBr();
-				run.getContent().add(0, br);
-				currentP.getContent().add(run);
+				run.getContent()
+						.add(0, br);
+				currentP.getContent()
+						.add(run);
 			}
 		}
 
-		// 3. add following siblings to current paragraph (i.e. the last paragraph)
-		currentP.getContent().addAll(followingSiblings);
+		// 3. add following siblings to current paragraph (i.e. the last
+		// paragraph)
+		currentP.getContent()
+				.addAll(followingSiblings);
 	}
 
 	/**
 	 * Creates a new text run for the given text.
 	 * <p/>
-	 * <b>Note:</b> This method uses the given string as-is, except that <code>null</code> is treated as the empty string.
-	 * Multiline texts must be split by the caller into different paragraphs (see
-	 * {@link #insertTextInParagraph(ObjectFactory, RPr, P, int, String)}). Additinally, tab characters are replaced by
-	 * the corresponding tab element (i.e. &tl;w:tab /&gt;).
+	 * <b>Note:</b> This method uses the given string as-is, except that
+	 * <code>null</code> is treated as the empty string. Multiline texts must be
+	 * split by the caller into different paragraphs (see
+	 * {@link #insertTextInParagraph(ObjectFactory, RPr, P, int, String)}).
+	 * Additinally, tab characters are replaced by the corresponding tab element
+	 * (i.e. &tl;w:tab /&gt;).
 	 *
 	 * @param factory
-	 *          object factory docx4j elements are created with.
+	 *            object factory docx4j elements are created with.
 	 * @param runProperties
-	 *          run properties applied to every run created within this method.
+	 *            run properties applied to every run created within this
+	 *            method.
 	 * @param s
-	 *          text to be inserted at the given place
+	 *            text to be inserted at the given place
 	 * @return
 	 */
 	protected R createTextRun(ObjectFactory factory, RPr runProperties, String s) {
@@ -427,21 +460,22 @@ public class DocxAdapter {
 
 		String[] parts = StringUtility.split(ObjectUtility.nvl(s, ""), "\\t");
 		if (parts.length == 0) {
-			parts = new String[]{""};
+			parts = new String[] { "" };
 		}
 		boolean first = false;
 		for (String textPart : parts) {
 			if (!first) {
 				first = true;
-			}
-			else {
+			} else {
 				Tab tab = factory.createRTab();
-				run.getContent().add(factory.createRTab(tab));
+				run.getContent()
+						.add(factory.createRTab(tab));
 			}
 			Text text = factory.createText();
 			text.setValue(textPart);
 			text.setSpace(PRESERVE_WHITESPACE);
-			run.getContent().add(factory.createRT(text));
+			run.getContent()
+					.add(factory.createRT(text));
 		}
 		return run;
 	}
@@ -459,7 +493,8 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * @return Returns the complex char field contained in the given run or null.
+	 * @return Returns the complex char field contained in the given run or
+	 *         null.
 	 */
 	protected FldChar getFldChar(R r) {
 		if (r == null || r.getContent() == null) {
@@ -475,15 +510,15 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * @return Returns the contents of the instrText element contained by the given run or the empty string.
+	 * @return Returns the contents of the instrText element contained by the
+	 *         given run or the empty string.
 	 */
 	protected String getInstrTextValue(R r) {
 		if (r == null || r.getContent() == null) {
 			return "";
 		}
 		for (Object o : r.getContent()) {
-			if (o instanceof JAXBElement<?>
-			&& ObjectUtility.equals(((JAXBElement<?>) o).getName()
+			if (o instanceof JAXBElement<?> && ObjectUtility.equals(((JAXBElement<?>) o).getName()
 					.getLocalPart(), "instrText")) {
 				o = XmlUtils.unwrap(o);
 				if (o instanceof Text) {
@@ -498,7 +533,7 @@ public class DocxAdapter {
 	 * sets the table indexed by count as current active
 	 *
 	 * @param index
-	 *          vararg of table indexes
+	 *            vararg of table indexes
 	 * @throws ProcessingException
 	 */
 	protected Tbl getTableByIndex(int... index) throws ProcessingException {
@@ -509,14 +544,13 @@ public class DocxAdapter {
 	 * sets the table indexed by bookmark as current active
 	 *
 	 * @param String
-	 *          : name of bookmark
+	 *            : name of bookmark
 	 * @throws ProcessingException
 	 */
 	protected Tbl getTableByBookmark(String bookmark) throws ProcessingException {
 		try {
 			return findTableByBookmark(bookmark);
-		}
-		catch (JAXBException e) {
+		} catch (JAXBException e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
 		}
 	}
@@ -525,7 +559,7 @@ public class DocxAdapter {
 	 * Deletes the table referenced by the provided bookmark.
 	 *
 	 * @param bookmark
-	 *          Bookmark of table
+	 *            Bookmark of table
 	 * @throws ProcessingException
 	 */
 	public void deleteTableByBookmark(String bookmark) throws ProcessingException {
@@ -539,24 +573,23 @@ public class DocxAdapter {
 			// first try to remove the complete table
 			Object parent = XmlUtils.unwrap(tbl.getParent());
 			if (parent instanceof ContentAccessor) {
-				changed = ((ContentAccessor) parent).getContent().remove(tbl);
+				changed = ((ContentAccessor) parent).getContent()
+						.remove(tbl);
 			}
 
 			// if it did not work, remove table contents
 			if (!changed) {
-				for (Iterator<Object> it = tbl.getContent().iterator(); it
-						.hasNext();) {
+				for (Iterator<Object> it = tbl.getContent()
+						.iterator(); it.hasNext();) {
 					Object next = XmlUtils.unwrap(it.next());
 					if (next instanceof Tr) {
 						it.remove();
 					}
 				}
 			}
-		}
-		catch (JAXBException e) {
+		} catch (JAXBException e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
-		}
-		finally {
+		} finally {
 			if (changed) {
 				applyChangesToJaxbElements();
 			}
@@ -567,16 +600,19 @@ public class DocxAdapter {
 	 * Fills the specified table.
 	 *
 	 * @param tableIndex
-	 *          Index of table to fill
+	 *            Index of table to fill
 	 * @param Object
-	 *          [][]: data is a matrix
-	 * @param int: startRow, row to start inserting values, 0 based
-	 * @param int: startCol, column to start inserting values, 0 based expected
-	 *        and handled value types are: {@link String} {@link java.util.date} is formatted using
-	 *        {@link java.text.dateFormat#MEDIUM} optionally
-	 *        displaying time when time is other than 00:00:00 {@link Number} is
-	 *        formatted using {@link java.text.numberFormat} {@link Boolean} is
-	 *        formatted as "X" for true, "" for false
+	 *            [][]: data is a matrix
+	 * @param int:
+	 *            startRow, row to start inserting values, 0 based
+	 * @param int:
+	 *            startCol, column to start inserting values, 0 based expected
+	 *            and handled value types are: {@link String}
+	 *            {@link java.util.date} is formatted using
+	 *            {@link java.text.dateFormat#MEDIUM} optionally displaying time
+	 *            when time is other than 00:00:00 {@link Number} is formatted
+	 *            using {@link java.text.numberFormat} {@link Boolean} is
+	 *            formatted as "X" for true, "" for false
 	 * @throws ProcessingException
 	 */
 	public void fillTable(int tableIndex, int startRow, int startCol, Object[][] data) throws ProcessingException {
@@ -587,19 +623,23 @@ public class DocxAdapter {
 	 * Fills the specified table.
 	 *
 	 * @param tableBookmark
-	 *          Bookmark of table to fill
+	 *            Bookmark of table to fill
 	 * @param Object
-	 *          [][]: data is a matrix
-	 * @param int: startRow, row to start inserting values, 0 based
-	 * @param int: startCol, column to start inserting values, 0 based expected
-	 *        and handled value types are: {@link String} {@link java.util.date} is formatted using
-	 *        {@link java.text.dateFormat#MEDIUM} optionally
-	 *        displaying time when time is other than 00:00:00 {@link Number} is
-	 *        formatted using {@link java.text.numberFormat} {@link Boolean} is
-	 *        formatted as "X" for true, "" for false
+	 *            [][]: data is a matrix
+	 * @param int:
+	 *            startRow, row to start inserting values, 0 based
+	 * @param int:
+	 *            startCol, column to start inserting values, 0 based expected
+	 *            and handled value types are: {@link String}
+	 *            {@link java.util.date} is formatted using
+	 *            {@link java.text.dateFormat#MEDIUM} optionally displaying time
+	 *            when time is other than 00:00:00 {@link Number} is formatted
+	 *            using {@link java.text.numberFormat} {@link Boolean} is
+	 *            formatted as "X" for true, "" for false
 	 * @throws ProcessingException
 	 */
-	public void fillTable(String tableBookmark, int startRow, int startCol, Object[][] data) throws ProcessingException {
+	public void fillTable(String tableBookmark, int startRow, int startCol, Object[][] data)
+			throws ProcessingException {
 		fillTable(getTableByBookmark(tableBookmark), startRow, startCol, data);
 	}
 
@@ -607,14 +647,17 @@ public class DocxAdapter {
 	 * fills the currently active table
 	 *
 	 * @param Object
-	 *          [][]: data is a matrix
-	 * @param int: startRow, row to start inserting values, 0 based
-	 * @param int: startCol, column to start inserting values, 0 based expected
-	 *        and handled value types are: {@link String} {@link java.util.date} is formatted using
-	 *        {@link java.text.dateFormat#MEDIUM} optionally
-	 *        displaying time when time is other than 00:00:00 {@link Number} is
-	 *        formatted using {@link java.text.numberFormat} {@link Boolean} is
-	 *        formatted as "X" for true, "" for false
+	 *            [][]: data is a matrix
+	 * @param int:
+	 *            startRow, row to start inserting values, 0 based
+	 * @param int:
+	 *            startCol, column to start inserting values, 0 based expected
+	 *            and handled value types are: {@link String}
+	 *            {@link java.util.date} is formatted using
+	 *            {@link java.text.dateFormat#MEDIUM} optionally displaying time
+	 *            when time is other than 00:00:00 {@link Number} is formatted
+	 *            using {@link java.text.numberFormat} {@link Boolean} is
+	 *            formatted as "X" for true, "" for false
 	 * @throws ProcessingException
 	 */
 	protected void fillTable(Tbl table, int startRow, int startCol, Object[][] data) throws ProcessingException {
@@ -630,7 +673,8 @@ public class DocxAdapter {
 			// create row if necessary
 			while (startRow + data.length > getRowsOfTable(table).size()) {
 				Tr rowCopy = XmlUtils.deepCopy(templateRow);
-				table.getContent().add(rowCopy);
+				table.getContent()
+						.add(rowCopy);
 			}
 
 			for (Object[] array : data) {
@@ -647,8 +691,7 @@ public class DocxAdapter {
 				}
 				startRow++;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
 		}
 	}
@@ -657,7 +700,7 @@ public class DocxAdapter {
 	 * Returns a list of table rows.
 	 *
 	 * @param table
-	 *          Table
+	 *            Table
 	 * @return List of table rows.
 	 */
 	protected List<Tr> getRowsOfTable(Tbl table) {
@@ -674,9 +717,9 @@ public class DocxAdapter {
 	 * Returns a specific row of the table.
 	 *
 	 * @param table
-	 *          Table
+	 *            Table
 	 * @param index
-	 *          Index of row
+	 *            Index of row
 	 * @return Row referenced by index.
 	 */
 	protected Tr getRowOfTable(Tbl table, int index) {
@@ -696,16 +739,15 @@ public class DocxAdapter {
 	 * Returns a specific table of the row.
 	 *
 	 * @param row
-	 *          Row
+	 *            Row
 	 * @param index
-	 *          Index of column
+	 *            Index of column
 	 * @return Column referenced by index
 	 */
 	protected Tc getColumnOfRow(Tr row, int index) {
 		int i = 0;
 		for (Object rowContent : row.getContent()) {
-			if (rowContent instanceof JAXBElement<?>
-			&& ((JAXBElement<?>) rowContent).getValue() instanceof Tc) {
+			if (rowContent instanceof JAXBElement<?> && ((JAXBElement<?>) rowContent).getValue() instanceof Tc) {
 				if (i == index) {
 					return (Tc) ((JAXBElement<?>) rowContent).getValue();
 				}
@@ -725,8 +767,7 @@ public class DocxAdapter {
 	protected JAXBElement<?> getJaxbelementOfColumnOfRow(Tr row, int index) {
 		int i = 0;
 		for (Object rowContent : row.getContent()) {
-			if (rowContent instanceof JAXBElement<?>
-			&& ((JAXBElement<?>) rowContent).getValue() instanceof Tc) {
+			if (rowContent instanceof JAXBElement<?> && ((JAXBElement<?>) rowContent).getValue() instanceof Tc) {
 				if (i == index) {
 					return (JAXBElement<?>) rowContent;
 				}
@@ -740,9 +781,9 @@ public class DocxAdapter {
 	 * Sets the text to the column.
 	 *
 	 * @param column
-	 *          Column
+	 *            Column
 	 * @param value
-	 *          Text
+	 *            Text
 	 */
 	public void setTextInColumn(Tc column, String value) {
 		if (column == null) {
@@ -768,9 +809,9 @@ public class DocxAdapter {
 			}
 
 			// text has not been added so far
-			ParaRPr pRpr = p.getPPr().getRPr();
-			insertTextInParagraph(new ObjectFactory(),
-					createRprFromParaRpr(pRpr), p, 0, value);
+			ParaRPr pRpr = p.getPPr()
+					.getRPr();
+			insertTextInParagraph(new ObjectFactory(), createRprFromParaRpr(pRpr), p, 0, value);
 			return;
 		}
 	}
@@ -782,7 +823,8 @@ public class DocxAdapter {
 	 * @return
 	 */
 	protected RPr createRprFromParaRpr(ParaRPr pRpr) {
-		// unfortunately this method is needed cause the rpr object of the paragraph has another type than the rpr object from the run
+		// unfortunately this method is needed cause the rpr object of the
+		// paragraph has another type than the rpr object from the run
 		ObjectFactory factory = new ObjectFactory();
 		RPr rpr = factory.createRPr();
 		rpr.setB(pRpr.getB());
@@ -835,13 +877,13 @@ public class DocxAdapter {
 			return null;
 		}
 		if (m_file == null) {
-			throw new ProcessingException("File is not set. Adapter was not created by opening a file. Use saveAs instead.");
+			throw new ProcessingException(
+					"File is not set. Adapter was not created by opening a file. Use saveAs instead.");
 		}
 		try {
 			m_package.save(m_file);
 			return m_file;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
 		}
 	}
@@ -849,18 +891,21 @@ public class DocxAdapter {
 	/**
 	 * Saves the current document under the given filename.
 	 * <p>
-	 * Before saving: following preparation tasks can be activated by different flags:
+	 * Before saving: following preparation tasks can be activated by different
+	 * flags:
 	 * <ol>
-	 * <li><b>unlinkFields</b>: unlink all fields in current document by considering every doc variable field in the
-	 * normal text and every field inside text areas</li>
+	 * <li><b>unlinkFields</b>: unlink all fields in current document by
+	 * considering every doc variable field in the normal text and every field
+	 * inside text areas</li>
 	 * </ol>
 	 * </p>
 	 *
 	 * @param filename
-	 *          the filename where the current document should be saved
+	 *            the filename where the current document should be saved
 	 * @param unlinkFields
-	 *          flag to indicate if the fields should be unlinked before saving.
-	 *          Unlinking does only make sense if the fields will be updated before
+	 *            flag to indicate if the fields should be unlinked before
+	 *            saving. Unlinking does only make sense if the fields will be
+	 *            updated before
 	 * @throws ProcessingException
 	 */
 	public File saveAs(String filename) throws ProcessingException {
@@ -871,8 +916,7 @@ public class DocxAdapter {
 			File file = new File(filename);
 			m_package.save(file);
 			return file;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
 		}
 	}
@@ -880,18 +924,20 @@ public class DocxAdapter {
 	/**
 	 * find a table in word doc by its index num
 	 *
-	 * @param int: index
+	 * @param int:
+	 *            index
 	 * @return Tbl
 	 * @throws ProcessingException
 	 */
 	protected Tbl findTableByIndex(int index) throws ProcessingException {
-		return findTableByIndex(new int[]{index});
+		return findTableByIndex(new int[] { index });
 	}
 
 	/**
 	 * find a table in word doc by its index num
 	 *
-	 * @param int[]: array of indexes
+	 * @param int[]:
+	 *            array of indexes
 	 * @return Tbl
 	 * @throws ProcessingException
 	 */
@@ -916,14 +962,12 @@ public class DocxAdapter {
 					}
 				}
 			}
-		}
-		catch (JAXBException e) {
+		} catch (JAXBException e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
-		} 
-		catch (XPathBinderAssociationIsPartialException e) {
+		} catch (XPathBinderAssociationIsPartialException e) {
 			throw new ProcessingException(UNABLE_EXECUTE_OPERATION, e);
 		}
-		
+
 		return null;
 	}
 
@@ -931,7 +975,7 @@ public class DocxAdapter {
 	 * find a table in word doc by its bookmark name
 	 *
 	 * @param String
-	 *          : name of bookmark
+	 *            : name of bookmark
 	 * @return Table
 	 * @throws ProcessingException
 	 */
@@ -939,29 +983,24 @@ public class DocxAdapter {
 		if (m_package == null) {
 			return null;
 		}
-		
-		final String xpath = "//w:bookmarkStart[@w:name='" 
-		        + name
-				+ "']/../../../..";
+
+		final String xpath = "//w:bookmarkStart[@w:name='" + name + "']/../../../..";
 		List<Object> objects = null;
-		
+
 		try {
 			objects = getMainDocumentPart().getJAXBNodesViaXPath(xpath, false);
-		} 
-		catch (XPathBinderAssociationIsPartialException e) {
+		} catch (XPathBinderAssociationIsPartialException e) {
 			LOG.error("", e);
 		}
-		
+
 		if (objects != null && objects.size() > 0) {
 			Object tbl = XmlUtils.unwrap(objects.get(0));
 			if (tbl instanceof Tbl) {
 				// explicitly check for Tbl instance, because there might be
 				// others too
 				return (Tbl) tbl;
-			}
-			else {
-				LOG.warn("Found possible table bookmark " + name
-						+ " but it is not a table");
+			} else {
+				LOG.warn("Found possible table bookmark " + name + " but it is not a table");
 			}
 		}
 		return null;
@@ -980,15 +1019,17 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Applies the given xpath expression on different document parts (i.e. headers, body, footers) and invokes the given
-	 * processor for each matching document node.
+	 * Applies the given xpath expression on different document parts (i.e.
+	 * headers, body, footers) and invokes the given processor for each matching
+	 * document node.
 	 * <p/>
-	 * <b>Note:</b> The method applies all changes to JAXB elements (i.e. invokes {@link #applyChangesToJaxbElements()}).
+	 * <b>Note:</b> The method applies all changes to JAXB elements (i.e.
+	 * invokes {@link #applyChangesToJaxbElements()}).
 	 *
 	 * @param xpath
-	 *          XPath expression for selecting docx4j document nodes.
+	 *            XPath expression for selecting docx4j document nodes.
 	 * @param processor
-	 *          processor applied on every matching document node.
+	 *            processor applied on every matching document node.
 	 * @return Returns <code>true</code> if the document structure has been
 	 *         changed.
 	 * @throws JAXBException
@@ -1000,7 +1041,9 @@ public class DocxAdapter {
 			// headers
 			for (HeaderPart headerPart : getAllHeaderParts()) {
 				if (headerPart.getBinder() == null) {
-					// header part is auto-created and is not based on an existing XML-element. Hence there is no binder and therefore XPath queries cannot be performed.
+					// header part is auto-created and is not based on an
+					// existing XML-element. Hence there is no binder and
+					// therefore XPath queries cannot be performed.
 					continue;
 				}
 				for (Object node : headerPart.getJAXBNodesViaXPath(xpath, false)) {
@@ -1016,18 +1059,18 @@ public class DocxAdapter {
 			// footers
 			for (FooterPart footerPart : getAllFooterParts()) {
 				if (footerPart.getBinder() == null) {
-					// footer part is auto-created and is not based on an existing XML-element. Hence there is no binder and therefore XPath queries cannot be performed.
+					// footer part is auto-created and is not based on an
+					// existing XML-element. Hence there is no binder and
+					// therefore XPath queries cannot be performed.
 					continue;
 				}
 				for (Object node : footerPart.getJAXBNodesViaXPath(xpath, false)) {
 					changed |= processor.process(node);
 				}
 			}
-		}
-		catch (JAXBException | XPathBinderAssociationIsPartialException e) {
+		} catch (JAXBException | XPathBinderAssociationIsPartialException e) {
 			throw new ProcessingException("Error while processing document parts", e);
-		}
-		finally {
+		} finally {
 			if (changed) {
 				applyChangesToJaxbElements();
 			}
@@ -1036,21 +1079,24 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Invokes the given processor on complex fields that are found within paragraphs selected by the given xpath
-	 * expression. All headers, the document's body and all footers are searched for paragraphs.
+	 * Invokes the given processor on complex fields that are found within
+	 * paragraphs selected by the given xpath expression. All headers, the
+	 * document's body and all footers are searched for paragraphs.
 	 * <p/>
-	 * <b>Note:</b> The method applies all changes to JAXB elements (i.e. invokes {@link #applyChangesToJaxbElements()}).
+	 * <b>Note:</b> The method applies all changes to JAXB elements (i.e.
+	 * invokes {@link #applyChangesToJaxbElements()}).
 	 *
 	 * @param paragraphXpath
-	 *          XPath expression for selecting paragraph nodes in a docx4j
-	 *          document.
+	 *            XPath expression for selecting paragraph nodes in a docx4j
+	 *            document.
 	 * @param fieldProcessor
-	 *          processor invoked on every paragraph selected by the given xpath
-	 *          expression.
+	 *            processor invoked on every paragraph selected by the given
+	 *            xpath expression.
 	 * @return Returns <code>true</code> if the document has been changed.
 	 * @throws ProcessingException
 	 */
-	public boolean processComplexFields(String paragraphXpath, final IDocxComplexFieldProcessor fieldProcessor) throws ProcessingException {
+	public boolean processComplexFields(String paragraphXpath, final IDocxComplexFieldProcessor fieldProcessor)
+			throws ProcessingException {
 		return processDocumentParts(paragraphXpath, new IDocxNodeProcessor() {
 			@Override
 			public boolean process(Object documentNode) throws JAXBException, ProcessingException {
@@ -1060,7 +1106,9 @@ public class DocxAdapter {
 					throw new ProcessingException("document node must not be null");
 				}
 				if (!(unwrappedDcoumentNode instanceof P)) {
-					throw new ProcessingException("Only paragraphs are supported for processing complex fields. But given document node has type [" + unwrappedDcoumentNode.getClass() + "]");
+					throw new ProcessingException(
+							"Only paragraphs are supported for processing complex fields. But given document node has type ["
+									+ unwrappedDcoumentNode.getClass() + "]");
 				}
 
 				P p = (P) unwrappedDcoumentNode;
@@ -1076,25 +1124,26 @@ public class DocxAdapter {
 						if (fldCharType == STFldCharType.BEGIN) {
 							// complex field begin
 							if (withinFldCharSection) {
-								throw new ProcessingException("invalid document: second fldChar start within fldChar start");
+								throw new ProcessingException(
+										"invalid document: second fldChar start within fldChar start");
 							}
 							withinFldCharSection = true;
 							complexField.setBeginR(run);
 							continue;
-						}
-						else if (fldCharType == STFldCharType.SEPARATE) {
+						} else if (fldCharType == STFldCharType.SEPARATE) {
 							// complex field separate
 							if (!withinFldCharSection) {
-								throw new ProcessingException("invalid document: fldChar separate without fldChar start");
+								throw new ProcessingException(
+										"invalid document: fldChar separate without fldChar start");
 							}
 							if (withinFldCharSeparate) {
-								throw new ProcessingException("invalid document: second fldChar separate within same fldChar start");
+								throw new ProcessingException(
+										"invalid document: second fldChar separate within same fldChar start");
 							}
 							withinFldCharSeparate = true;
 							complexField.setSeparateR(run);
 							continue;
-						}
-						else if (fldCharType == STFldCharType.END) {
+						} else if (fldCharType == STFldCharType.END) {
 							// complex field end
 							if (!withinFldCharSection) {
 								throw new ProcessingException("invalid document: fldChar end without fldChar start");
@@ -1112,17 +1161,16 @@ public class DocxAdapter {
 					}
 
 					if (withinFldCharSeparate) {
-						// child is after complex type separate (i.e. the field's display text)
+						// child is after complex type separate (i.e. the
+						// field's display text)
 						complexField.addDefaultValueContent(content);
-					}
-					else if (withinFldCharSection) {
+					} else if (withinFldCharSection) {
 						complexField.addCodeContent(content);
 					}
 				}
 
 				if (withinFldCharSection) {
-					throw new ProcessingException(
-							"invalid document: fldChar start without fldChar end");
+					throw new ProcessingException("invalid document: fldChar start without fldChar end");
 				}
 				return changed;
 			}
@@ -1130,11 +1178,13 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * @return Returns all available header parts (i.e. default, first, even header).
+	 * @return Returns all available header parts (i.e. default, first, even
+	 *         header).
 	 */
 	protected Set<HeaderPart> getAllHeaderParts() {
 		Set<HeaderPart> headers = new HashSet<HeaderPart>();
-		List<SectionWrapper> sections = getPackage().getDocumentModel().getSections();
+		List<SectionWrapper> sections = getPackage().getDocumentModel()
+				.getSections();
 		for (SectionWrapper section : sections) {
 			HeaderFooterPolicy hfp = section.getHeaderFooterPolicy();
 			if (hfp != null) {
@@ -1153,11 +1203,13 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * @return Returns all available footer parts (i.e. default, first, even header).
+	 * @return Returns all available footer parts (i.e. default, first, even
+	 *         header).
 	 */
 	protected Set<FooterPart> getAllFooterParts() {
 		Set<FooterPart> footers = new HashSet<FooterPart>();
-		for (SectionWrapper section : getPackage().getDocumentModel().getSections()) {
+		for (SectionWrapper section : getPackage().getDocumentModel()
+				.getSections()) {
 			HeaderFooterPolicy hfp = section.getHeaderFooterPolicy();
 			if (hfp != null) {
 				if (hfp.getDefaultFooter() != null) {
@@ -1175,8 +1227,8 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Ensures the there is a settings.xml file available with the tag CTCompat to prevent word from using
-	 * "compatibility mode".
+	 * Ensures the there is a settings.xml file available with the tag CTCompat
+	 * to prevent word from using "compatibility mode".
 	 */
 	protected final void ensureCompatibilitySettings() {
 		try {
@@ -1212,28 +1264,29 @@ public class DocxAdapter {
 			compatSetting.setUri(WORD_SCHEMA_NAMESPACE);
 			compatSetting.setVal(WORD_2010_INTERNAL_VERSION);
 
-			compat.getCompatSetting().add(compatSetting);
+			compat.getCompatSetting()
+					.add(compatSetting);
 
-		}
-		catch (Docx4JException e) {
+		} catch (Docx4JException e) {
 			LOG.info("error adding compatibility settings", e);
 		}
 	}
 
 	/**
-	 * Convenience method for {@link #applyChangesToJaxbElements(WordprocessingMLPackage)}.
+	 * Convenience method for
+	 * {@link #applyChangesToJaxbElements(WordprocessingMLPackage)}.
 	 */
 	protected void applyChangesToJaxbElements() {
 		try {
 			m_package = applyChangesToJaxbElements(m_package);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			LOG.warn("Exception while applying changes to JAXB elements", e);
 		}
 	}
 
 	/**
-	 * Removes recursively any markup elements form the given docx4j document element.
+	 * Removes recursively any markup elements form the given docx4j document
+	 * element.
 	 */
 	protected void removeMarkup(Object o) {
 		if (o == null) {
@@ -1247,15 +1300,15 @@ public class DocxAdapter {
 				return;
 			}
 
-			for (Iterator<Object> it = ca.getContent().iterator(); it.hasNext();) {
+			for (Iterator<Object> it = ca.getContent()
+					.iterator(); it.hasNext();) {
 				Object next = XmlUtils.unwrap(it.next());
 				// filter markup elements
 				if (next instanceof CTMarkup // bookmarks, comments, change
 						// control
 						|| next instanceof ProofErr) { // spelling checker marks
 					it.remove();
-				}
-				else {
+				} else {
 					removeMarkup(next);
 				}
 			}
@@ -1263,15 +1316,18 @@ public class DocxAdapter {
 	}
 
 	/**
-	 * Workaround for a poorly initialized or outdated JAXB context. The word processing ML package is serialized into its
-	 * XML and parsed again.
+	 * Workaround for a poorly initialized or outdated JAXB context. The word
+	 * processing ML package is serialized into its XML and parsed again.
 	 * <p/>
-	 * docx4j documentation about modifying documents using XPath: <blockquote> There is a limitation however: the xpath
-	 * expressions are evaluated against the XML document as it was when first opened in docx4j. You can update the
-	 * associated XML document once only, by passing true into getJAXBNodesViaXPath. Updating it again (with current JAXB
-	 * 2.1.x or 2.2.x) will cause an error. </blockquote>
+	 * docx4j documentation about modifying documents using XPath: <blockquote>
+	 * There is a limitation however: the xpath expressions are evaluated
+	 * against the XML document as it was when first opened in docx4j. You can
+	 * update the associated XML document once only, by passing true into
+	 * getJAXBNodesViaXPath. Updating it again (with current JAXB 2.1.x or
+	 * 2.2.x) will cause an error. </blockquote>
 	 */
-	public static WordprocessingMLPackage applyChangesToJaxbElements(WordprocessingMLPackage pkg) throws Docx4JException {
+	public static WordprocessingMLPackage applyChangesToJaxbElements(WordprocessingMLPackage pkg)
+			throws Docx4JException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Save saver = new Save(pkg);
 		saver.save(out);

@@ -25,26 +25,27 @@ public class DatabaseSetupService {
 
 	@PostConstruct
 	public void autoCreateDatabase() {
-		
+
 		if (CONFIG.getPropertyValue(ServerProperties.DatabaseAutoCreateProperty.class)) {
 			try {
-				RunContext context = BEANS.get(SuperUserRunContextProducer.class).produce();
+				RunContext context = BEANS.get(SuperUserRunContextProducer.class)
+						.produce();
 				IRunnable runnable = new IRunnable() {
 
 					@Override
 					public void run() throws Exception {
 						BEANS.all(IDataStoreService.class)
-						.forEach(store -> store.create());
+								.forEach(store -> store.create());
 
 						initializeTexts();
-						initializeCodes();						
+						initializeCodes();
 					}
 				};
 
 				context.run(runnable);
-			}
-			catch (RuntimeException e) {
-				BEANS.get(ExceptionHandler.class).handle(e);
+			} catch (RuntimeException e) {
+				BEANS.get(ExceptionHandler.class)
+						.handle(e);
 			}
 		}
 	}
@@ -56,7 +57,9 @@ public class DatabaseSetupService {
 
 	private void initializeTexts() {
 		LOG.info("Initialize texts");
-		BEANS.get(PermissionService.class).checkTranslations();
-		BEANS.get(TextService.class).invalidateCache();
+		BEANS.get(PermissionService.class)
+				.checkTranslations();
+		BEANS.get(TextService.class)
+				.invalidateCache();
 	}
 }

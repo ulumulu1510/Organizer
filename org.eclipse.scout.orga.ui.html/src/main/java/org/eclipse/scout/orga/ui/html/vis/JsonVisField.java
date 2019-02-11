@@ -31,40 +31,40 @@ public class JsonVisField<T extends IVisField> extends JsonFormField<T> {
 	@Override
 	protected void initJsonProperties(T model) {
 		super.initJsonProperties(model);
-	    putJsonProperty(new JsonProperty<T>(IVisField.PROP_USERS, model) {
-	    	@Override
-	    	protected Map<String, List<VisItem>> modelValue() {
-	    		return getModel().getPropertyUsers();
-	    	}
-
-	    	@SuppressWarnings("unchecked")
+		putJsonProperty(new JsonProperty<T>(IVisField.PROP_USERS, model) {
 			@Override
-	    	public Object prepareValueForToJson(Object value) {
-	    		return itemsMapToJSON((Map<String, List<VisItem>>) value);
-	    	}
-	    });
-	    putJsonProperty(new JsonProperty<T>(IVisField.PROP_START, model) {
-	    	@Override
-	    	protected Date modelValue() {
-	    		return getModel().getPropertyStart();
-	    	}
+			protected Map<String, List<VisItem>> modelValue() {
+				return getModel().getPropertyUsers();
+			}
 
+			@SuppressWarnings("unchecked")
 			@Override
-	    	public Object prepareValueForToJson(Object value) {
-	    		return dateToJSON((Date)value);
-	    	}
-	    });
-	    putJsonProperty(new JsonProperty<T>(IVisField.PROP_END, model) {
-	    	@Override
-	    	protected Date modelValue() {
-	    		return getModel().getPropertyEnd();
-	    	}
+			public Object prepareValueForToJson(Object value) {
+				return itemsMapToJSON((Map<String, List<VisItem>>) value);
+			}
+		});
+		putJsonProperty(new JsonProperty<T>(IVisField.PROP_START, model) {
+			@Override
+			protected Date modelValue() {
+				return getModel().getPropertyStart();
+			}
 
 			@Override
-	    	public Object prepareValueForToJson(Object value) {
-	    		return dateToJSON((Date)value);
-	    	}
-	    });
+			public Object prepareValueForToJson(Object value) {
+				return dateToJSON((Date) value);
+			}
+		});
+		putJsonProperty(new JsonProperty<T>(IVisField.PROP_END, model) {
+			@Override
+			protected Date modelValue() {
+				return getModel().getPropertyEnd();
+			}
+
+			@Override
+			public Object prepareValueForToJson(Object value) {
+				return dateToJSON((Date) value);
+			}
+		});
 	}
 
 	private JSONObject itemsMapToJSON(Map<String, List<VisItem>> map) {
@@ -73,16 +73,17 @@ public class JsonVisField<T extends IVisField> extends JsonFormField<T> {
 		}
 
 		JSONObject itemsMap = new JSONObject();
-		map.entrySet().stream()
-		.forEach(entry -> putProperty(itemsMap, entry.getKey(), entryToJSON(entry)));
+		map.entrySet()
+				.stream()
+				.forEach(entry -> putProperty(itemsMap, entry.getKey(), entryToJSON(entry)));
 		return itemsMap;
 	}
 
 	private JSONArray entryToJSON(Entry<String, List<VisItem>> entry) {
 		JSONArray array = new JSONArray();
 		entry.getValue()
-		.stream()
-		.forEach(visItem -> array.put(visItemToJSON(visItem)));
+				.stream()
+				.forEach(visItem -> array.put(visItemToJSON(visItem)));
 		return array;
 	}
 

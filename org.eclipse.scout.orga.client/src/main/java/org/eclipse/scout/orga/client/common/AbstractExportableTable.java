@@ -23,7 +23,8 @@ public abstract class AbstractExportableTable extends AbstractTable {
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractExportableTable.class);
 
-	// TODO check if there is a better way to do this (ie. extending classes not having to implement getPageOutline...
+	// TODO check if there is a better way to do this (ie. extending classes not
+	// having to implement getPageOutline...
 	abstract public IOutline getPageOutline();
 
 	@Order(100000)
@@ -56,7 +57,8 @@ public abstract class AbstractExportableTable extends AbstractTable {
 
 		@Override
 		protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-			return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection, TableMenuType.MultiSelection);
+			return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection,
+					TableMenuType.MultiSelection);
 		}
 
 		@Override

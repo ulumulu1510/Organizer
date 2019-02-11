@@ -8,7 +8,7 @@ public class AbstractIdColumn extends AbstractStringColumn {
 	protected boolean getConfiguredPrimaryKey() {
 		return true;
 	}
-	
+
 	@Override
 	protected boolean getConfiguredDisplayable() {
 		return false;

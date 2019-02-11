@@ -12,20 +12,23 @@ package org.eclipse.scout.docx4j;
 import org.docx4j.wml.P;
 
 /**
- * Strategy for processing complex fields (i.e. document variables and other functions) of a docx document.
+ * Strategy for processing complex fields (i.e. document variables and other
+ * functions) of a docx document.
  * 
  * @since 1.0.0
  */
 public interface IDocxComplexFieldProcessor {
 
-  /**
-   * Call back method invoked by {@link DocxAdapter#processComplexFields(String, IDocxComplexFieldProcessor)}.
-   * 
-   * @param p
-   *          the parent paragraph of the given complexField.
-   * @param complexField
-   *          the complex field to process.
-   * @return Returns <code>true</code> if any changes were made to the document. <code>false</code> otherwise.
-   */
-  boolean processField(P p, DocxComplexField complexField);
+	/**
+	 * Call back method invoked by
+	 * {@link DocxAdapter#processComplexFields(String, IDocxComplexFieldProcessor)}.
+	 * 
+	 * @param p
+	 *            the parent paragraph of the given complexField.
+	 * @param complexField
+	 *            the complex field to process.
+	 * @return Returns <code>true</code> if any changes were made to the
+	 *         document. <code>false</code> otherwise.
+	 */
+	boolean processField(P p, DocxComplexField complexField);
 }

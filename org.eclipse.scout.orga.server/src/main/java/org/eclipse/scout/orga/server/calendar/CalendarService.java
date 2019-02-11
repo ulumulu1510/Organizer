@@ -16,21 +16,16 @@ public class CalendarService implements ICalendarService {
 
 	@Override
 	public Set<ICalendarItem> loadBookingsInInterval(Date minDate, Date maxDate) {
-		return BEANS.get(BookingService.class).getBookingsInInterval(minDate, maxDate)
+		return BEANS.get(BookingService.class)
+				.getBookingsInInterval(minDate, maxDate)
 				.map(this::bookingToCalenderItem)
 				.collect(Collectors.toSet());
 	}
 
 	private ICalendarItem bookingToCalenderItem(BookingRecord booking) {
-		CalendarAppointment calendarAppointment = new CalendarAppointment(
-				booking.getId(),
-				booking.getUserId(),
-				booking.getDateFrom(),
-				booking.getDateTo(),
-				false,
-				StringUtility.join(" ", booking.getDescription()) ,
-				StringUtility.join(" | ", booking.getNote(), booking.getUserId()),
-				"calendar-appointment");
+		CalendarAppointment calendarAppointment = new CalendarAppointment(booking.getId(), booking.getUserId(),
+				booking.getDateFrom(), booking.getDateTo(), false, StringUtility.join(" ", booking.getDescription()),
+				StringUtility.join(" | ", booking.getNote(), booking.getUserId()), "calendar-appointment");
 		calendarAppointment.setOwner(booking.getUserId());
 		return calendarAppointment;
 	}

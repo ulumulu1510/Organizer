@@ -41,11 +41,12 @@ public class RoleTablePage extends AbstractPageWithTable<Table> {
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(IRoleService.class).getRoleTableData(filter));
+		importPageData(BEANS.get(IRoleService.class)
+				.getRoleTableData(filter));
 	}
 
 	public class Table extends AbstractExportableTable {
-		
+
 		@Override
 		public IOutline getPageOutline() {
 			return getOutline();
@@ -105,11 +106,11 @@ public class RoleTablePage extends AbstractPageWithTable<Table> {
 				reloadPage();
 			}
 		}
-		
+
 		private String getTextId() {
 			return getTextIdColumn().getSelectedValue();
 		}
-		
+
 		private String getRoleId() {
 			return getIdColumn().getSelectedValue();
 		}
@@ -118,7 +119,8 @@ public class RoleTablePage extends AbstractPageWithTable<Table> {
 
 			@Override
 			public void formChanged(FormEvent e) {
-				if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm().isFormStored()) {
+				if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm()
+						.isFormStored()) {
 					reloadPage();
 				}
 			}
@@ -145,14 +147,12 @@ public class RoleTablePage extends AbstractPageWithTable<Table> {
 
 		@Order(15)
 		public class TextIdColumn extends AbstractStringColumn {
-			
+
 			@Override
 			protected boolean getConfiguredDisplayable() {
 				return false;
 			}
 		}
-		
-		
 
 		@Order(20)
 		public class NameColumn extends AbstractStringColumn {

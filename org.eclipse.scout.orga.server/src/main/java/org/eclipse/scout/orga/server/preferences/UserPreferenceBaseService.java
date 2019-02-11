@@ -18,54 +18,59 @@ import org.eclipse.scout.orga.shared.preferences.IUserPreferenceService;
 @ApplicationScoped
 public class UserPreferenceBaseService extends AbstractJooqService implements IUserPreferenceService {
 
-    
-    @Override
-    public Properties load(String userId, String node) {
-        UserPreferenceRecord record = getContext().selectFrom(getTable()).where(createWhereCondition(userId, node)).fetchOne();
-        if (record == null) {
-            return new Properties();
-        }
-        byte[] data = record.getData();
-        try {
-            return SerializationUtility.createObjectSerializer().deserialize(data, Properties.class);
-        } catch (ClassNotFoundException | IOException e) {
-            throw new ProcessingException("Error deserializing IPreferences", e);
-        }
-    }
-    
-    @Override
-    public void store(String userId, String node, Properties prefs) {
-        try {
-            byte[] data = SerializationUtility.createObjectSerializer().serialize(prefs);
-            UserPreferenceRecord record = new UserPreferenceRecord(userId, node, data);
-            if (exists(userId, node)) {
-                getContext().executeUpdate(record, createWhereCondition(userId, node));
-            } else {
-               getContext().executeInsert(record); 
-            }
-        } catch (IOException e) {
-            throw new ProcessingException("Error serializing IPreferences", e);
-        }
-    }
+	@Override
+	public Properties load(String userId, String node) {
+		UserPreferenceRecord record = getContext().selectFrom(getTable())
+				.where(createWhereCondition(userId, node))
+				.fetchOne();
+		if (record == null) {
+			return new Properties();
+		}
+		byte[] data = record.getData();
+		try {
+			return SerializationUtility.createObjectSerializer()
+					.deserialize(data, Properties.class);
+		} catch (ClassNotFoundException | IOException e) {
+			throw new ProcessingException("Error deserializing IPreferences", e);
+		}
+	}
 
-    private TableField<UserPreferenceRecord, String> nodeColumn() {
-        return getTable().NODE;
-    }
+	@Override
+	public void store(String userId, String node, Properties prefs) {
+		try {
+			byte[] data = SerializationUtility.createObjectSerializer()
+					.serialize(prefs);
+			UserPreferenceRecord record = new UserPreferenceRecord(userId, node, data);
+			if (exists(userId, node)) {
+				getContext().executeUpdate(record, createWhereCondition(userId, node));
+			} else {
+				getContext().executeInsert(record);
+			}
+		} catch (IOException e) {
+			throw new ProcessingException("Error serializing IPreferences", e);
+		}
+	}
 
-    private TableField<UserPreferenceRecord, String> userColumn() {
-        return getTable().USER;
-    }
-    
-    private UserPreference getTable() {
-        return UserPreference.USER_PREFERENCE;
-    }
+	private TableField<UserPreferenceRecord, String> nodeColumn() {
+		return getTable().NODE;
+	}
 
-    private boolean exists(String userId, String node) {
-        return getContext().fetchExists(DSL.selectFrom(getTable()).where(createWhereCondition(userId, node)));
-    }
-    
-    private Condition createWhereCondition(String userId, String node) {
-        return userColumn().eq(userId).and(nodeColumn().eq(node));
-    }
-    
+	private TableField<UserPreferenceRecord, String> userColumn() {
+		return getTable().USER;
+	}
+
+	private UserPreference getTable() {
+		return UserPreference.USER_PREFERENCE;
+	}
+
+	private boolean exists(String userId, String node) {
+		return getContext().fetchExists(DSL.selectFrom(getTable())
+				.where(createWhereCondition(userId, node)));
+	}
+
+	private Condition createWhereCondition(String userId, String node) {
+		return userColumn().eq(userId)
+				.and(nodeColumn().eq(node));
+	}
+
 }

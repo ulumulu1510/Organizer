@@ -87,15 +87,7 @@ public class XlsxAdapter {
 	 * Predefined excel styles
 	 */
 	public static enum PredefinedStyle {
-		NUMBER_PRECISION,
-		NUMBER,
-		FORMAT_TIMESTAMP,
-		FORMAT_DATE,
-		PERCENTAGE,
-		WRAP_TEXT,
-		BOLD,
-		BOLD_AND_WRAP_TEXT,
-		TITLE;
+		NUMBER_PRECISION, NUMBER, FORMAT_TIMESTAMP, FORMAT_DATE, PERCENTAGE, WRAP_TEXT, BOLD, BOLD_AND_WRAP_TEXT, TITLE;
 	}
 
 	private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
@@ -108,7 +100,8 @@ public class XlsxAdapter {
 	private static final long NUMBER_FORMAT_TIMESTAMP = 203;
 	private static final long NUMBER_FORMAT_DATE = 204;
 
-	private static final String[] COLUMN_ALPHABET = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+	private static final String[] COLUMN_ALPHABET = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+			"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
 	private static final int NUMBER_OF_CHARACTERS_PER_COLUMN = 15;
 
@@ -126,7 +119,8 @@ public class XlsxAdapter {
 	}
 
 	/**
-	 * Opens the provided workbook (as {@link File}) or creates an empty one (if file is not set)
+	 * Opens the provided workbook (as {@link File}) or creates an empty one (if
+	 * file is not set)
 	 *
 	 * @param file
 	 * @throws ProcessingException
@@ -134,13 +128,11 @@ public class XlsxAdapter {
 	public XlsxAdapter(File file) throws ProcessingException {
 		if (file == null || !file.exists() || file.length() == 0) {
 			initNew();
-		}
-		else {
+		} else {
 			InputStream is;
 			try {
 				is = new FileInputStream(file);
-			}
-			catch (FileNotFoundException e) {
+			} catch (FileNotFoundException e) {
 				throw new ProcessingException("Loading xlsx failed", e);
 			}
 			initLoad(is);
@@ -148,7 +140,8 @@ public class XlsxAdapter {
 	}
 
 	/**
-	 * Opens the provided workbook (as {@link InputStream}) or creates an empty one (if inputStream is not set)
+	 * Opens the provided workbook (as {@link InputStream}) or creates an empty
+	 * one (if inputStream is not set)
 	 *
 	 * @param inputStream
 	 * @throws ProcessingException
@@ -156,44 +149,43 @@ public class XlsxAdapter {
 	public XlsxAdapter(InputStream inputStream) throws ProcessingException {
 		if (inputStream == null) {
 			initNew();
-		}
-		else {
+		} else {
 			initLoad(inputStream);
 		}
 	}
 
 	private void initNew() throws ProcessingException {
 		try {
-			Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
+			Docx4jProperties.getProperties()
+					.setProperty("docx4j.Log4j.Configurator.disabled", "true");
 
-			//Workbook:
+			// Workbook:
 			m_workbook = SpreadsheetMLPackage.createPackage();
 
-			//Shared Strings:
+			// Shared Strings:
 			initNewSharedStrings();
 
-			//Style sheet:
+			// Style sheet:
 			initNewStylesheet();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException("Creating xlsx failed", e);
 		}
 	}
 
 	private void initLoad(InputStream is) throws ProcessingException {
 		try {
-			Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
+			Docx4jProperties.getProperties()
+					.setProperty("docx4j.Log4j.Configurator.disabled", "true");
 
-			//Workbook:
+			// Workbook:
 			m_workbook = (SpreadsheetMLPackage) SpreadsheetMLPackage.load(is);
 
-			//Shared Strings:
+			// Shared Strings:
 			loadSharedStrings();
 
-			//Style sheet:
+			// Style sheet:
 			loadStylesheet();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException("Loading xlsx failed", e);
 		}
 	}
@@ -221,57 +213,66 @@ public class XlsxAdapter {
 	 * @return
 	 */
 	protected long addSharedString(String value) {
-		for (int i = 0; i < m_sharedStrings.getSi().size(); i++) {
-			CTRst item = m_sharedStrings.getSi().get(i);
-			if (value.equals(item.getT() == null ? null : item.getT().getValue())) {
+		for (int i = 0; i < m_sharedStrings.getSi()
+				.size(); i++) {
+			CTRst item = m_sharedStrings.getSi()
+					.get(i);
+			if (value.equals(item.getT() == null ? null : item.getT()
+					.getValue())) {
 				return i;
 			}
 		}
 
-		CTRst item = Context.getsmlObjectFactory().createCTRst();
+		CTRst item = Context.getsmlObjectFactory()
+				.createCTRst();
 		CTXstringWhitespace whitespaceValue = new CTXstringWhitespace();
 		whitespaceValue.setValue(value);
 		item.setT(whitespaceValue);
-		m_sharedStrings.getSi().add(item);
-		return m_sharedStrings.getSi().size() - 1;
+		m_sharedStrings.getSi()
+				.add(item);
+		return m_sharedStrings.getSi()
+				.size() - 1;
 	}
 
 	private void loadSharedStrings() throws Docx4JException {
-		SharedStrings sharedStrings = m_workbook.getWorkbookPart().getSharedStrings();
+		SharedStrings sharedStrings = m_workbook.getWorkbookPart()
+				.getSharedStrings();
 		if (sharedStrings != null) {
 			m_sharedStrings = sharedStrings.getContents();
-		}
-		else {
+		} else {
 			initNewSharedStrings();
 		}
 	}
 
 	private void initNewSharedStrings() throws InvalidFormatException {
 		SharedStrings shared = new SharedStrings(new PartName("/xl/sharedStrings.xml"));
-		m_sharedStrings = Context.getsmlObjectFactory().createCTSst();
+		m_sharedStrings = Context.getsmlObjectFactory()
+				.createCTSst();
 		shared.setJaxbElement(m_sharedStrings);
-		m_workbook.getWorkbookPart().addTargetPart(shared);
+		m_workbook.getWorkbookPart()
+				.addTargetPart(shared);
 	}
 
 	private void loadStylesheet() throws Docx4JException {
 		List<Styles> parts = getParts(m_workbook.getRelationshipsPart(), Styles.class);
 		if (parts.size() == 0) {
 			initNewStylesheet();
-		}
-		else if (parts.size() == 1) {
-			m_stylesheet = parts.get(0).getContents();
-		}
-		else {
+		} else if (parts.size() == 1) {
+			m_stylesheet = parts.get(0)
+					.getContents();
+		} else {
 			throw new IllegalStateException("Unexpected Styles parts size: " + parts.size());
 		}
 	}
 
 	private void initNewStylesheet() throws InvalidFormatException {
 		Styles styles = new Styles(new PartName("/xl/styles.xml"));
-		m_stylesheet = Context.getsmlObjectFactory().createCTStylesheet();
+		m_stylesheet = Context.getsmlObjectFactory()
+				.createCTStylesheet();
 		styles.setJaxbElement(getStyleSheet());
 		initStylesheet();
-		m_workbook.getWorkbookPart().addTargetPart(styles);
+		m_workbook.getWorkbookPart()
+				.addTargetPart(styles);
 	}
 
 	/**
@@ -287,16 +288,16 @@ public class XlsxAdapter {
 	 * Creates a new sheet with provided name.
 	 *
 	 * @param name
-	 *          Name of new sheet
+	 *            Name of new sheet
 	 * @return Created sheet
 	 * @throws ProcessingException
 	 */
 	public WorksheetPart createSheet(String name) throws ProcessingException {
 		try {
 			int size = getSheets().size();
-			return m_workbook.createWorksheetPart(new PartName("/xl/worksheets/sheet" + (size + 1) + ".xml"), name, size + 1);
-		}
-		catch (Exception e) {
+			return m_workbook.createWorksheetPart(new PartName("/xl/worksheets/sheet" + (size + 1) + ".xml"), name,
+					size + 1);
+		} catch (Exception e) {
 			throw new ProcessingException("Failed to create new sheet", e);
 		}
 	}
@@ -305,15 +306,14 @@ public class XlsxAdapter {
 	 * Saves the current workbook to the provided file.
 	 *
 	 * @param file
-	 *          File (xlsx)
+	 *            File (xlsx)
 	 * @throws ProcessingException
 	 */
 	public void save(File file) throws ProcessingException {
 		try {
 			Save saver = new Save(m_workbook);
 			saver.save(new FileOutputStream(file));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException("Failed to store xlsx file", e);
 		}
 	}
@@ -322,15 +322,14 @@ public class XlsxAdapter {
 	 * Saves the current workbook to the provided file.
 	 *
 	 * @param outputStream
-	 *          Output Stream
+	 *            Output Stream
 	 * @throws ProcessingException
 	 */
 	public void save(OutputStream outputStream) throws ProcessingException {
 		try {
 			Save saver = new Save(m_workbook);
 			saver.save(outputStream);
-		}
-		catch (Docx4JException e) {
+		} catch (Docx4JException e) {
 			throw new ProcessingException("Failed to store xlsx outputStream", e);
 		}
 	}
@@ -339,23 +338,24 @@ public class XlsxAdapter {
 	 * Returns the row. Creates the row if it does not exist.
 	 *
 	 * @param sheet
-	 *          Worksheet
+	 *            Worksheet
 	 * @param rowNum
-	 *          Row number (0-based)
+	 *            Row number (0-based)
 	 * @return Row
-	 * @throws Docx4JException 
+	 * @throws Docx4JException
 	 */
 	public Row getRow(WorksheetPart sheet, long rowNum) throws Docx4JException {
-		return getRow(sheet.getContents().getSheetData(), rowNum);
+		return getRow(sheet.getContents()
+				.getSheetData(), rowNum);
 	}
 
 	/**
 	 * Returns the row. Creates the row if it does not exist.
 	 *
 	 * @param sheetData
-	 *          Worksheet data
+	 *            Worksheet data
 	 * @param rowNum
-	 *          Row number (0-based)
+	 *            Row number (0-based)
 	 * @return Row
 	 */
 	protected Row getRow(SheetData sheetData, long rowNum) {
@@ -365,9 +365,11 @@ public class XlsxAdapter {
 			}
 		}
 
-		Row row = Context.getsmlObjectFactory().createRow();
+		Row row = Context.getsmlObjectFactory()
+				.createRow();
 		row.setR(rowNum + 1);
-		sheetData.getRow().add(row);
+		sheetData.getRow()
+				.add(row);
 		return row;
 	}
 
@@ -375,9 +377,10 @@ public class XlsxAdapter {
 	 * Returns the cell. Creates the cell if it does not exist.
 	 *
 	 * @param row
-	 *          Row object retrieved e.g. by {@link #getRow(WorksheetPart, long)}
+	 *            Row object retrieved e.g. by
+	 *            {@link #getRow(WorksheetPart, long)}
 	 * @param colNum
-	 *          Column number (0-based)
+	 *            Column number (0-based)
 	 * @return Cell
 	 */
 	public Cell getCell(Row row, int colNum) {
@@ -389,30 +392,35 @@ public class XlsxAdapter {
 			}
 		}
 
-		Cell cell = Context.getsmlObjectFactory().createCell();
+		Cell cell = Context.getsmlObjectFactory()
+				.createCell();
 		cell.setR(cellPosition);
-		row.getC().add(cell);
+		row.getC()
+				.add(cell);
 		return cell;
 	}
 
 	/**
 	 * Sets the value of the cell.
 	 * <p>
-	 * The type of the value is auto-detected and the cell type is modified accordingly.
+	 * The type of the value is auto-detected and the cell type is modified
+	 * accordingly.
 	 *
 	 * @param sheet
-	 *          Worksheet
+	 *            Worksheet
 	 * @param rowNum
-	 *          Row number (0-based)
+	 *            Row number (0-based)
 	 * @param colNum
-	 *          Column number (0-based)
+	 *            Column number (0-based)
 	 * @param value
-	 *          Value to set
+	 *            Value to set
 	 * @return Cell
-	 * @throws Docx4JException 
+	 * @throws Docx4JException
 	 */
-	public Cell setCellValue(WorksheetPart sheet, long rowNum, int colNum, Object value) throws ProcessingException, Docx4JException {
-		SheetData sheetData = sheet.getContents().getSheetData();
+	public Cell setCellValue(WorksheetPart sheet, long rowNum, int colNum, Object value)
+			throws ProcessingException, Docx4JException {
+		SheetData sheetData = sheet.getContents()
+				.getSheetData();
 		Row row = getRow(sheetData, rowNum);
 		Cell cell = getCell(row, colNum);
 		setCellValue(cell, value);
@@ -422,14 +430,15 @@ public class XlsxAdapter {
 	/**
 	 * Sets the value of the cell.
 	 * <p>
-	 * The type of the value is auto-detected and the cell type is modified accordingly.
+	 * The type of the value is auto-detected and the cell type is modified
+	 * accordingly.
 	 *
 	 * @param rowNum
-	 *          Row number (0-based)
+	 *            Row number (0-based)
 	 * @param colNum
-	 *          Column number (0-based)
+	 *            Column number (0-based)
 	 * @param value
-	 *          Value to set
+	 *            Value to set
 	 * @return Cell
 	 */
 	public Cell setCellValue(Row row, int colNum, Object value) throws ProcessingException {
@@ -449,35 +458,29 @@ public class XlsxAdapter {
 		if (value == null) {
 			cell.setT(STCellType.INLINE_STR); // inline string
 			cell.setIs(null);
-		}
-		else if (value instanceof Number) {
+		} else if (value instanceof Number) {
 			PredefinedStyle format;
 			if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {
 				format = PredefinedStyle.NUMBER_PRECISION;
-			}
-			else {
+			} else {
 				format = PredefinedStyle.NUMBER;
 			}
 
 			cell.setS(getPredefinedStyleNumber(format));
 			cell.setT(STCellType.N); // number
 			cell.setV(((Number) value).toString());
-		}
-		else if (value instanceof Timestamp) {
+		} else if (value instanceof Timestamp) {
 			cell.setS(getPredefinedStyleNumber(PredefinedStyle.FORMAT_TIMESTAMP));
 			cell.setV(ISO_8601_DATE_FORMAT.format(new Date(((Timestamp) value).getTime())));
 			cell.setV(Double.toString(getExcelDate(new Date(((Timestamp) value).getTime()))));
-		}
-		else if (value instanceof Date) {
+		} else if (value instanceof Date) {
 			cell.setS(getPredefinedStyleNumber(PredefinedStyle.FORMAT_DATE));
 			cell.setV(ISO_8601_DATE_FORMAT.format((Date) value));
 			cell.setV(Double.toString(getExcelDate((Date) value)));
-		}
-		else if (value instanceof Boolean) {
+		} else if (value instanceof Boolean) {
 			cell.setT(STCellType.B); // boolean
 			cell.setV(((Boolean) value) ? "1" : "0");
-		}
-		else if (value instanceof String && ((String) value).endsWith("%")) {
+		} else if (value instanceof String && ((String) value).endsWith("%")) {
 			cell.setS(getPredefinedStyleNumber(PredefinedStyle.PERCENTAGE));
 
 			String s = (String) value;
@@ -486,15 +489,13 @@ public class XlsxAdapter {
 				s = s.substring(0, s.length() - 1);
 				// divide by 100 to gain correct percentage
 				cell.setV(Double.toString(Double.valueOf(s) / 100));
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info("item=" + value + " value=" + s, e);
 				}
 				cell.setV(Long.toString(addSharedString("'" + s)));
 			}
-		}
-		else {
+		} else {
 			String s = "" + value;
 			if (s.contains("\n")) {
 				cell.setS(getPredefinedStyleNumber(PredefinedStyle.WRAP_TEXT));
@@ -508,22 +509,22 @@ public class XlsxAdapter {
 	 * Gets the value of the cell with given coordinates in the given sheet.
 	 *
 	 * @param sheet
-	 *          The sheet of the cell
+	 *            The sheet of the cell
 	 * @param rowNum
-	 *          row index (0 based)
+	 *            row index (0 based)
 	 * @param colNum
-	 *          column index (0 based)
+	 *            column index (0 based)
 	 * @return The value of the corresponding cell.
 	 */
 	public String getCellValue(WorksheetPart sheet, long rowNum, int colNum) {
 		SheetData sheetData = null;
 		try {
-			sheetData = sheet.getContents().getSheetData();
-		} 
-		catch (Docx4JException e) {
+			sheetData = sheet.getContents()
+					.getSheetData();
+		} catch (Docx4JException e) {
 			LOG.error("Docx4JException", e);
 		}
-		
+
 		Row row = getRow(sheetData, rowNum);
 		return getCellValue(row, colNum);
 	}
@@ -532,9 +533,9 @@ public class XlsxAdapter {
 	 * Gets the value of the cell with the given index in the given row.
 	 *
 	 * @param row
-	 *          The row
+	 *            The row
 	 * @param colNum
-	 *          the index of the cell (0 based).
+	 *            the index of the cell (0 based).
 	 * @return The value of the corresponding cell.
 	 */
 	public String getCellValue(Row row, int colNum) {
@@ -545,24 +546,26 @@ public class XlsxAdapter {
 	 * Gets the value of the given cell.
 	 *
 	 * @param cell
-	 *          The cell to get the value from
+	 *            The cell to get the value from
 	 * @return the value of the given cell as {@link String}
 	 */
 	public String getCellValue(Cell cell) {
 		String v = cell.getV();
 		if (STCellType.S.equals(cell.getT())) {
 			// shared string
-			int index = Integer.valueOf(v).intValue();
-			CTRst ctRst = m_sharedStrings.getSi().get(index);
+			int index = Integer.valueOf(v)
+					.intValue();
+			CTRst ctRst = m_sharedStrings.getSi()
+					.get(index);
 			CTXstringWhitespace t = ctRst.getT();
 			if (t != null) {
 				return t.getValue();
-			}
-			else {
+			} else {
 				List<CTRElt> r = ctRst.getR();
 				if (CollectionUtility.hasElements(r)) {
 					// partially formatted shared string
-					// when not the full cell contains formatting but only parts of the cell content
+					// when not the full cell contains formatting but only parts
+					// of the cell content
 					StringBuilder sb = new StringBuilder();
 					for (CTRElt elt : r) {
 						CTXstringWhitespace t2 = elt.getT();
@@ -581,7 +584,7 @@ public class XlsxAdapter {
 	 * Gets the zero based column index of the given cell.
 	 *
 	 * @param cell
-	 *          The cell for which the column index should be calculated.
+	 *            The cell for which the column index should be calculated.
 	 * @return the zero based column index.
 	 */
 	public static int getColumnIndex(Cell cell) {
@@ -592,9 +595,9 @@ public class XlsxAdapter {
 	 * Sets the style for the cell.
 	 *
 	 * @param cell
-	 *          Cell
+	 *            Cell
 	 * @param style
-	 *          Predefined style
+	 *            Predefined style
 	 */
 	public void setCellStyle(Cell cell, PredefinedStyle style) {
 		cell.setS(getPredefinedStyleNumber(style));
@@ -604,13 +607,18 @@ public class XlsxAdapter {
 	 * Returns the internal style number for the predefined style.
 	 *
 	 * @param style
-	 *          Predefined style.
+	 *            Predefined style.
 	 * @return Internal style number
 	 */
 	public Long getPredefinedStyleNumber(PredefinedStyle style) {
-		for (int i = 0; i < getStyleSheet().getCellStyles().getCellStyle().size(); i++) {
-			CTCellStyle cellStyle = getStyleSheet().getCellStyles().getCellStyle().get(i);
-			if (style.name().equals(cellStyle.getName())) {
+		for (int i = 0; i < getStyleSheet().getCellStyles()
+				.getCellStyle()
+				.size(); i++) {
+			CTCellStyle cellStyle = getStyleSheet().getCellStyles()
+					.getCellStyle()
+					.get(i);
+			if (style.name()
+					.equals(cellStyle.getName())) {
 				return (long) i;
 			}
 		}
@@ -633,26 +641,39 @@ public class XlsxAdapter {
 	 */
 	protected final void initFonts() {
 		// font
-		CTFonts fonts = Context.getsmlObjectFactory().createCTFonts();
+		CTFonts fonts = Context.getsmlObjectFactory()
+				.createCTFonts();
 		CTFont font;
 
 		// default (font id 0)
-		font = Context.getsmlObjectFactory().createCTFont();
-		fonts.getFont().add(font);
+		font = Context.getsmlObjectFactory()
+				.createCTFont();
+		fonts.getFont()
+				.add(font);
 
 		// bold (font id 1)
-		font = Context.getsmlObjectFactory().createCTFont();
-		fonts.getFont().add(font);
-		CTBooleanProperty boldProperty = Context.getsmlObjectFactory().createCTBooleanProperty();
+		font = Context.getsmlObjectFactory()
+				.createCTFont();
+		fonts.getFont()
+				.add(font);
+		CTBooleanProperty boldProperty = Context.getsmlObjectFactory()
+				.createCTBooleanProperty();
 		boldProperty.setVal(Boolean.TRUE);
-		font.getNameOrCharsetOrFamily().add(Context.getsmlObjectFactory().createCTFontB(boldProperty));
+		font.getNameOrCharsetOrFamily()
+				.add(Context.getsmlObjectFactory()
+						.createCTFontB(boldProperty));
 
 		// font size 24 (font id 2)
-		font = Context.getsmlObjectFactory().createCTFont();
-		fonts.getFont().add(font);
-		CTFontSize fontSize = Context.getsmlObjectFactory().createCTFontSize();
+		font = Context.getsmlObjectFactory()
+				.createCTFont();
+		fonts.getFont()
+				.add(font);
+		CTFontSize fontSize = Context.getsmlObjectFactory()
+				.createCTFontSize();
 		fontSize.setVal(24.0);
-		font.getNameOrCharsetOrFamily().add(Context.getsmlObjectFactory().createCTFontSz(fontSize));
+		font.getNameOrCharsetOrFamily()
+				.add(Context.getsmlObjectFactory()
+						.createCTFontSz(fontSize));
 
 		getStyleSheet().setFonts(fonts);
 	}
@@ -661,9 +682,12 @@ public class XlsxAdapter {
 	 * Initializes the fills.
 	 */
 	protected final void initFills() {
-		CTFills fills = Context.getsmlObjectFactory().createCTFills();
-		CTFill fill = Context.getsmlObjectFactory().createCTFill();
-		fills.getFill().add(fill);
+		CTFills fills = Context.getsmlObjectFactory()
+				.createCTFills();
+		CTFill fill = Context.getsmlObjectFactory()
+				.createCTFill();
+		fills.getFill()
+				.add(fill);
 		getStyleSheet().setFills(fills);
 	}
 
@@ -671,9 +695,12 @@ public class XlsxAdapter {
 	 * Initializes the borders.
 	 */
 	protected final void initBorders() {
-		CTBorders borders = Context.getsmlObjectFactory().createCTBorders();
-		CTBorder border = Context.getsmlObjectFactory().createCTBorder();
-		borders.getBorder().add(border);
+		CTBorders borders = Context.getsmlObjectFactory()
+				.createCTBorders();
+		CTBorder border = Context.getsmlObjectFactory()
+				.createCTBorder();
+		borders.getBorder()
+				.add(border);
 		getStyleSheet().setBorders(borders);
 	}
 
@@ -682,18 +709,23 @@ public class XlsxAdapter {
 	 */
 	protected final void initNumberFormats() {
 		// number formats
-		CTNumFmts numFmts = Context.getsmlObjectFactory().createCTNumFmts();
+		CTNumFmts numFmts = Context.getsmlObjectFactory()
+				.createCTNumFmts();
 		CTNumFmt numFmt = null;
 
-		numFmt = Context.getsmlObjectFactory().createCTNumFmt();
+		numFmt = Context.getsmlObjectFactory()
+				.createCTNumFmt();
 		numFmt.setNumFmtId(NUMBER_FORMAT_TIMESTAMP);
 		numFmt.setFormatCode("dd.MM.yyyy hh:mm");
-		numFmts.getNumFmt().add(numFmt);
+		numFmts.getNumFmt()
+				.add(numFmt);
 
-		numFmt = Context.getsmlObjectFactory().createCTNumFmt();
+		numFmt = Context.getsmlObjectFactory()
+				.createCTNumFmt();
 		numFmt.setNumFmtId(NUMBER_FORMAT_DATE);
 		numFmt.setFormatCode("dd.MM.yyyy");
-		numFmts.getNumFmt().add(numFmt);
+		numFmts.getNumFmt()
+				.add(numFmt);
 
 		getStyleSheet().setNumFmts(numFmts);
 	}
@@ -704,274 +736,339 @@ public class XlsxAdapter {
 	protected final void initStyles() {
 		CTXf xf;
 
-		CTCellStyleXfs cellStyleXfs = Context.getsmlObjectFactory().createCTCellStyleXfs();
+		CTCellStyleXfs cellStyleXfs = Context.getsmlObjectFactory()
+				.createCTCellStyleXfs();
 
 		// default (0)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// number precision (1)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(4L); // �18.8.30 id: 4
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// number (2)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(3L); // �18.8.30 id: 3
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// timestamp (3)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(NUMBER_FORMAT_TIMESTAMP);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// date (4)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(NUMBER_FORMAT_DATE);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// precent (5)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(10L); // �18.8.30 id: 10
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// wrap text (6)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// bold (7)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(1L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// bold & text wrap (8)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(1L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		// title (font size 24) (9)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(2L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellStyleXfs.getXf().add(xf);
+		cellStyleXfs.getXf()
+				.add(xf);
 
 		getStyleSheet().setCellStyleXfs(cellStyleXfs);
 
-		CTCellXfs cellXfs = Context.getsmlObjectFactory().createCTCellXfs();
+		CTCellXfs cellXfs = Context.getsmlObjectFactory()
+				.createCTCellXfs();
 
 		// default (xf id 0)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// number precision (xf id 1)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(4L); // �18.8.30 id: 4
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// number (xf id 2)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(3L); // �18.8.30 id: 3
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// timestamp (xf id 3)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(NUMBER_FORMAT_TIMESTAMP);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// date (xf id 4)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(NUMBER_FORMAT_DATE);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// precent (xf id 5)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(10L); // �18.8.30 id: 10
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// wrap text (xf id 6)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(0L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
 		xf.setApplyAlignment(Boolean.TRUE);
-		CTCellAlignment alignment = Context.getsmlObjectFactory().createCTCellAlignment();
+		CTCellAlignment alignment = Context.getsmlObjectFactory()
+				.createCTCellAlignment();
 		alignment.setWrapText(Boolean.TRUE);
 		xf.setAlignment(alignment);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// bold (xf id 7)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(1L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// bold & text wrap (xf id 8)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(1L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
 		xf.setApplyAlignment(Boolean.TRUE);
-		alignment = Context.getsmlObjectFactory().createCTCellAlignment();
+		alignment = Context.getsmlObjectFactory()
+				.createCTCellAlignment();
 		alignment.setWrapText(Boolean.TRUE);
 		xf.setAlignment(alignment);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		// title (xf id 9)
-		xf = Context.getsmlObjectFactory().createCTXf();
+		xf = Context.getsmlObjectFactory()
+				.createCTXf();
 		xf.setNumFmtId(0L);
 		xf.setFontId(2L);
 		xf.setFillId(0L);
 		xf.setBorderId(0L);
 		xf.setXfId(0L);
-		cellXfs.getXf().add(xf);
+		cellXfs.getXf()
+				.add(xf);
 
 		getStyleSheet().setCellXfs(cellXfs);
 
-		CTCellStyles cellStyles = Context.getsmlObjectFactory().createCTCellStyles();
+		CTCellStyles cellStyles = Context.getsmlObjectFactory()
+				.createCTCellStyles();
 		CTCellStyle cellStyle;
 
 		// default
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName("default");
 		cellStyle.setXfId(0L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// number precision
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.NUMBER_PRECISION.name());
 		cellStyle.setXfId(1L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// number
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.NUMBER.name());
 		cellStyle.setXfId(2L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// timestamp
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.FORMAT_TIMESTAMP.name());
 		cellStyle.setXfId(3L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// date
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.FORMAT_DATE.name());
 		cellStyle.setXfId(4L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// precent
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.PERCENTAGE.name());
 		cellStyle.setXfId(5L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// wrap text
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.WRAP_TEXT.name());
 		cellStyle.setXfId(6L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// column header (bold)
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.BOLD.name());
 		cellStyle.setXfId(7L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// column header (bold & text wrap)
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.BOLD_AND_WRAP_TEXT.name());
 		cellStyle.setXfId(8L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		// title (font size 24)
-		cellStyle = Context.getsmlObjectFactory().createCTCellStyle();
+		cellStyle = Context.getsmlObjectFactory()
+				.createCTCellStyle();
 		cellStyle.setName(PredefinedStyle.TITLE.name());
 		cellStyle.setXfId(9L);
 		cellStyle.setBuiltinId(0L);
-		cellStyles.getCellStyle().add(cellStyle);
+		cellStyles.getCellStyle()
+				.add(cellStyle);
 
 		getStyleSheet().setCellStyles(cellStyles);
 	}
@@ -980,9 +1077,9 @@ public class XlsxAdapter {
 	 * Method to recursively retrieve objects of a specific class.
 	 *
 	 * @param rp
-	 *          Relationship part
+	 *            Relationship part
 	 * @param clazz
-	 *          Class of objects to retrieve
+	 *            Class of objects to retrieve
 	 * @return
 	 */
 	protected final <T extends Part> List<T> getParts(RelationshipsPart rp, Class<T> clazz) {
@@ -995,17 +1092,20 @@ public class XlsxAdapter {
 	 * Helper method for {@link #getParts(RelationshipsPart, Class)}.
 	 *
 	 * @param list
-	 *          Result list
+	 *            Result list
 	 * @param handled
-	 *          Set of already handled parts
+	 *            Set of already handled parts
 	 * @param rp
-	 *          Relationship part
+	 *            Relationship part
 	 * @param clazz
-	 *          Class of objects to retrieve
+	 *            Class of objects to retrieve
 	 */
-	protected final <T extends Part> void traverseRelationships(List<T> list, Set<Part> handled, RelationshipsPart rp, Class<T> clazz) {
-		for (Relationship r : rp.getRelationships().getRelationship()) {
-			if (r.getTargetMode() != null && r.getTargetMode().equals("External")) {
+	protected final <T extends Part> void traverseRelationships(List<T> list, Set<Part> handled, RelationshipsPart rp,
+			Class<T> clazz) {
+		for (Relationship r : rp.getRelationships()
+				.getRelationship()) {
+			if (r.getTargetMode() != null && r.getTargetMode()
+					.equals("External")) {
 				continue;
 			}
 
@@ -1031,7 +1131,7 @@ public class XlsxAdapter {
 	 * Examples: 0 = A, 1 = B, 25 = Z, 26 = AA, 27 = AB
 	 *
 	 * @param columnIndex
-	 *          the numeric index of the column (zero based)
+	 *            the numeric index of the column (zero based)
 	 * @return String representing the column in letter notation
 	 */
 	public static String columnIndexToLetterNotation(int columnIndex) {
@@ -1068,7 +1168,7 @@ public class XlsxAdapter {
 	 * </p>
 	 *
 	 * @param letterNotation
-	 *          The letter notation of the column or cell.
+	 *            The letter notation of the column or cell.
 	 * @return the column index of the cell (zero based)
 	 */
 	public static int letterNotationToColumnIndex(String letterNotation) {
@@ -1087,14 +1187,14 @@ public class XlsxAdapter {
 	}
 
 	/**
-	 * Converts a {@link java.util.Date} to a double representing the date in Excel notation.
+	 * Converts a {@link java.util.Date} to a double representing the date in
+	 * Excel notation.
 	 *
 	 * @param date
-	 *          Date
+	 *            Date
 	 * @return Excel representation of date
 	 */
-	public static double getExcelDate(Date date)
-	{
+	public static double getExcelDate(Date date) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
 
@@ -1103,7 +1203,8 @@ public class XlsxAdapter {
 			throw new IllegalArgumentException("'year' must be 1900 or greater");
 		}
 
-		double fraction = (double) (((cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)) * 60 + cal.get(Calendar.SECOND)) * 1000 + cal.get(Calendar.MILLISECOND)) / 86400000D;
+		double fraction = (double) (((cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)) * 60
+				+ cal.get(Calendar.SECOND)) * 1000 + cal.get(Calendar.MILLISECOND)) / 86400000D;
 		cal.get(Calendar.HOUR_OF_DAY);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -1125,22 +1226,23 @@ public class XlsxAdapter {
 	 * Fills the csv into the current excel sheet.
 	 *
 	 * @param startRowIdx
-	 *          Row to start with
+	 *            Row to start with
 	 * @param startColIdx
-	 *          Column to start with
+	 *            Column to start with
 	 * @param title
-	 *          Title
+	 *            Title
 	 * @param infoRowsBefore
-	 *          Rows that should be added before the csv data
+	 *            Rows that should be added before the csv data
 	 * @param infoRowsAfter
-	 *          Rows that should be added after the csv data
+	 *            Rows that should be added after the csv data
 	 * @param csv
-	 *          csv data
+	 *            csv data
 	 * @param containsColumnNames
-	 *          {@code true} if the csv contains the column headers
+	 *            {@code true} if the csv contains the column headers
 	 * @throws ProcessingException
 	 */
-	public void fillCSV(int startRowIdx, int startColIdx, String title, String[] infoRowsBefore, String[] infoRowsAfter, Object[][] csv, boolean containsColumnNames) throws ProcessingException {
+	public void fillCSV(int startRowIdx, int startColIdx, String title, String[] infoRowsBefore, String[] infoRowsAfter,
+			Object[][] csv, boolean containsColumnNames) throws ProcessingException {
 		int excelRowIndex = startRowIdx;
 		int excelColIndex = startColIdx;
 		int columnCount = 0;
@@ -1152,8 +1254,7 @@ public class XlsxAdapter {
 		List<WorksheetPart> sheets = getSheets();
 		if (sheets.size() <= 0) {
 			sheet = createSheet("Sheet1");
-		}
-		else {
+		} else {
 			sheet = sheets.get(0);
 		}
 		try {
@@ -1187,8 +1288,7 @@ public class XlsxAdapter {
 						Cell cell = setCellValue(row, excelColIndex + c, name);
 						if (name.contains("\n")) {
 							cell.setS(getPredefinedStyleNumber(PredefinedStyle.BOLD_AND_WRAP_TEXT));
-						}
-						else {
+						} else {
 							cell.setS(getPredefinedStyleNumber(PredefinedStyle.BOLD));
 						}
 					}
@@ -1202,29 +1302,34 @@ public class XlsxAdapter {
 			try {
 				while (csvRowIndex < csv.length) {
 					Row row = getRow(sheet, excelRowIndex);
-					
+
 					for (int c = 0; c < columnCount; c++) {
 						Object value = csv[csvRowIndex][c];
 						setCellValue(row, c, value);
-					}// end for col
-					// next
+					} // end for col
+						// next
 					excelRowIndex++;
 					csvRowIndex++;
-				}// end for row
-			}
-			catch (Exception je) {
+				} // end for row
+			} catch (Exception je) {
 				throw new ProcessingException("interrupted", je);
 			}
 
 			// fit columns
-			Cols cols = Context.getsmlObjectFactory().createCols();
+			Cols cols = Context.getsmlObjectFactory()
+					.createCols();
 			final int maximumDigitWidth = 7; // Calibiri, 11 point, 96 dpi
 			for (int i = 0; i < excelColIndex + columnCount; i++) {
-				// width = Truncate([{Number of Characters} * {Maximum Digit Width} + {5 pixel padding}]/{Maximum Digit Width}*256)/256
-				double width = Math.floor((NUMBER_OF_CHARACTERS_PER_COLUMN * maximumDigitWidth + 5) / maximumDigitWidth * 256) / 256;
-				cols.getCol().add(createBestFitColumn(i, width));
+				// width = Truncate([{Number of Characters} * {Maximum Digit
+				// Width} + {5 pixel padding}]/{Maximum Digit Width}*256)/256
+				double width = Math.floor(
+						(NUMBER_OF_CHARACTERS_PER_COLUMN * maximumDigitWidth + 5) / maximumDigitWidth * 256) / 256;
+				cols.getCol()
+						.add(createBestFitColumn(i, width));
 			}
-			sheet.getContents().getCols().add(cols);
+			sheet.getContents()
+					.getCols()
+					.add(cols);
 
 			//
 			// set title of report now
@@ -1249,8 +1354,7 @@ public class XlsxAdapter {
 					r++;
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ProcessingException("unable execute operation", e);
 		}
 	}
@@ -1259,13 +1363,14 @@ public class XlsxAdapter {
 	 * Creates a best fit column.
 	 *
 	 * @param columnIndex
-	 *          Column index
+	 *            Column index
 	 * @param width
-	 *          Column width
+	 *            Column width
 	 * @return Created column
 	 */
 	protected Col createBestFitColumn(int columnIndex, double width) {
-		Col col = Context.getsmlObjectFactory().createCol();
+		Col col = Context.getsmlObjectFactory()
+				.createCol();
 		col.setBestFit(Boolean.TRUE);
 		col.setCustomWidth(Boolean.TRUE);
 		col.setMin(columnIndex + 1);

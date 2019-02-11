@@ -4,9 +4,9 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.shared.services.common.code.AbstractCode;
 
 public class SexCodeType extends BaseCodeType {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * IMPORTANT: This ID links the code type to the database content
 	 */
@@ -16,17 +16,17 @@ public class SexCodeType extends BaseCodeType {
 	public String getId() {
 		return ID;
 	}
-	
+
 	@Override
 	public boolean isDynamic() {
 		return true;
 	}
-	
+
 	@Override
 	public Class<? extends IApplicationCodeType> getCodeTypeClass() {
 		return SexCodeType.class;
 	}
-	
+
 	@Order(10.0)
 	public static class Male extends AbstractCode<String> {
 		private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class SexCodeType extends BaseCodeType {
 		public String getId() {
 			return ID;
 		}
-	}	
+	}
 
 	@Order(20.0)
 	public static class Female extends AbstractCode<String> {

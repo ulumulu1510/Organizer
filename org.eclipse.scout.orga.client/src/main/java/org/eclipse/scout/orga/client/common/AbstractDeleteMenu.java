@@ -24,13 +24,16 @@ public abstract class AbstractDeleteMenu extends AbstractMenu {
 
 	@Override
 	protected boolean getConfiguredEnabled() {
-		return isOwner() || BEANS.get(IAccessControlService.class).checkPermission(new DeleteEntityPermission());
+		return isOwner() || BEANS.get(IAccessControlService.class)
+				.checkPermission(new DeleteEntityPermission());
 	}
 
 	protected boolean isOwner() {
 		return getOwner() != null && getOwner().getSelectedValues()
 				.stream()
-				.allMatch(userId -> ClientSession.get().getUserId().equals(userId));
+				.allMatch(userId -> ClientSession.get()
+						.getUserId()
+						.equals(userId));
 	}
 
 	public abstract AbstractSmartColumn<String> getOwner();

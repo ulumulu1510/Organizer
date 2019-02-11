@@ -32,14 +32,14 @@ public class DocumentServiceTest {
 
 	@Test
 	public void testReadmeDocument() {
-		DocumentRecord docExpected = TableDataInitializer.DOCUMENT_ALICE_1;  
+		DocumentRecord docExpected = TableDataInitializer.DOCUMENT_ALICE_1;
 		String docId = docExpected.getId();
 		String docName = docExpected.getName();
 		assertTrue("Document not found: " + docName, service.exists(docId));
-		
+
 		DocumentRecord doc = service.get(docId);
 		String fileContent = "hello world";
-		
+
 		assertNotNull("Document record should not be null", doc);
 		assertEquals("Unexpected document id", docExpected.getId(), doc.getId());
 		assertEquals("Unexpected document name", docExpected.getName(), doc.getName());
@@ -52,13 +52,13 @@ public class DocumentServiceTest {
 
 	@Test
 	public void testLogoDocument() {
-		DocumentRecord docExpected = TableDataInitializer.DOCUMENT_ALICE_2;  
+		DocumentRecord docExpected = TableDataInitializer.DOCUMENT_ALICE_2;
 		String docId = docExpected.getId();
 		String docName = docExpected.getName();
 		assertTrue("Document not found: " + docName, service.exists(docId));
-		
+
 		DocumentRecord doc = service.get(docId);
-		
+
 		assertNotNull("Document record should not be null", doc);
 		assertEquals("Unexpected document id", docExpected.getId(), doc.getId());
 		assertEquals("Unexpected document name", docExpected.getName(), doc.getName());

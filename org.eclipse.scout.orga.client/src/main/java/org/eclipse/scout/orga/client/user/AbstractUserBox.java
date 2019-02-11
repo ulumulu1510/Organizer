@@ -24,7 +24,6 @@ public abstract class AbstractUserBox extends AbstractGroupBox {
 
 	private Locale locale;
 
-
 	@FormData
 	public String getUserId() {
 		return userId;
@@ -34,7 +33,7 @@ public abstract class AbstractUserBox extends AbstractGroupBox {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	@FormData
 	public String getFirstName() {
 		return firstName;
@@ -86,7 +85,6 @@ public abstract class AbstractUserBox extends AbstractGroupBox {
 		return 0;
 	}
 
-
 	@Order(10)
 	public class FirstNameField extends AbstractStringField {
 		@Override
@@ -129,7 +127,7 @@ public abstract class AbstractUserBox extends AbstractGroupBox {
 		protected boolean getConfiguredMandatory() {
 			return true;
 		}
-		
+
 		@Override
 		protected Class<? extends ICodeType<?, String>> getConfiguredCodeType() {
 			return LocaleCodeType.class;
@@ -153,7 +151,7 @@ public abstract class AbstractUserBox extends AbstractGroupBox {
 			return 128;
 		}
 	}
-	
+
 	public void setUserIdEnabled(boolean enabled) {
 		getUserIdField().setEnabled(enabled);
 		getUserIdField().setMandatory(enabled);

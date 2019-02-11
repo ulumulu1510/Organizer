@@ -29,7 +29,7 @@ import org.eclipse.scout.rt.platform.text.TEXTS;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 
 @FormData(value = VisFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
-public class VisForm extends AbstractForm{
+public class VisForm extends AbstractForm {
 
 	@Override
 	protected String getConfiguredTitle() {
@@ -112,14 +112,17 @@ public class VisForm extends AbstractForm{
 					if (date == null) {
 						getDateFromField().setValue(null);
 						getDateToField().setValue(null);
-					}
-					else {
-						YearMonth month = YearMonth.from(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+					} else {
+						YearMonth month = YearMonth.from(date.toInstant()
+								.atZone(ZoneId.systemDefault())
+								.toLocalDate());
 						LocalDate start = month.atDay(1);
-						LocalDate end   = month.atEndOfMonth();
+						LocalDate end = month.atEndOfMonth();
 
-						Instant instantStart = start.atStartOfDay(ZoneId.systemDefault()).toInstant();
-						Instant instantEnd = end.atStartOfDay(ZoneId.systemDefault()).toInstant();
+						Instant instantStart = start.atStartOfDay(ZoneId.systemDefault())
+								.toInstant();
+						Instant instantEnd = end.atStartOfDay(ZoneId.systemDefault())
+								.toInstant();
 
 						getDateFromField().resetValue();
 						getDateToField().resetValue();

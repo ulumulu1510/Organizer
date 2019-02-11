@@ -11,8 +11,8 @@ public class FileCodeType extends BaseCodeType {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * ID taken from class TableDataInitializer. 
-	 * IMPORTANT: This ID links the code type to the database content
+	 * ID taken from class TableDataInitializer. IMPORTANT: This ID links the
+	 * code type to the database content
 	 */
 	public static final String ID = "f0f3add3-83e6-4246-ad6f-2872fffbf639";
 
@@ -58,7 +58,7 @@ public class FileCodeType extends BaseCodeType {
 		protected String getConfiguredText() {
 			return TEXTS.get("TextDocument");
 		}
-		
+
 		@Override
 		protected String getConfiguredIconId() {
 			return FontAwesomeIcons.fa_fileText;
@@ -80,7 +80,7 @@ public class FileCodeType extends BaseCodeType {
 		protected String getConfiguredText() {
 			return TEXTS.get("JpgImage");
 		}
-		
+
 		@Override
 		protected String getConfiguredIconId() {
 			return FontAwesomeIcons.fa_filePictureO;
@@ -102,7 +102,7 @@ public class FileCodeType extends BaseCodeType {
 		protected String getConfiguredText() {
 			return TEXTS.get("PngImage");
 		}
-		
+
 		@Override
 		protected String getConfiguredIconId() {
 			return FontAwesomeIcons.fa_filePictureO;
@@ -124,7 +124,7 @@ public class FileCodeType extends BaseCodeType {
 		protected String getConfiguredText() {
 			return TEXTS.get("JavaFile");
 		}
-		
+
 		@Override
 		protected String getConfiguredIconId() {
 			return FontAwesomeIcons.fa_fileCodeO;
@@ -147,7 +147,7 @@ public class FileCodeType extends BaseCodeType {
 		protected String getConfiguredText() {
 			return TEXTS.get("PdfDocument");
 		}
-		
+
 		@Override
 		protected String getConfiguredIconId() {
 			return FontAwesomeIcons.fa_filePdfO;
@@ -170,7 +170,7 @@ public class FileCodeType extends BaseCodeType {
 		protected String getConfiguredText() {
 			return TEXTS.get("Unknown");
 		}
-		
+
 		@Override
 		protected String getConfiguredIconId() {
 			return FontAwesomeIcons.fa_fileO;

@@ -4,10 +4,10 @@ import java.security.BasicPermission;
 
 public class ReadTextPagePermission extends BasicPermission {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  public ReadTextPagePermission() {
-    super(ReadTextPagePermission.class.getSimpleName());
-  }
+	public ReadTextPagePermission() {
+		super(ReadTextPagePermission.class.getSimpleName());
+	}
 
 }

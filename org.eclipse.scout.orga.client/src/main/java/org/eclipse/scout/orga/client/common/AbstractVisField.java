@@ -18,9 +18,9 @@ import org.eclipse.scout.rt.platform.util.date.DateUtility;
 public abstract class AbstractVisField extends AbstractFormField implements IVisField {
 
 	/**
-	 * vis.js has a nasty habit of displaying only the days which are really needed.
-	 * But sometimes, you want to display time that goes just up to that date.
-	 * So we increase the end and decrease the start date by this delta.
+	 * vis.js has a nasty habit of displaying only the days which are really
+	 * needed. But sometimes, you want to display time that goes just up to that
+	 * date. So we increase the end and decrease the start date by this delta.
 	 */
 	private static final double DAYS_DELTA_VIS = 1.0;
 
@@ -72,7 +72,8 @@ public abstract class AbstractVisField extends AbstractFormField implements IVis
 	private Map<String, List<VisItem>> calculatPropertyUsers() {
 		Map<String, List<VisItem>> usersProperty = null;
 		if (readyToCalculateUsers()) {
-			usersProperty = BEANS.get(IVisService.class).calculateUserItems(users, start, end);
+			usersProperty = BEANS.get(IVisService.class)
+					.calculateUserItems(users, start, end);
 		}
 		return usersProperty;
 	}

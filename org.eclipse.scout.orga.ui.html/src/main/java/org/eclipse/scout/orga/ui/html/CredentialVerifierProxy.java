@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class CredentialVerifierProxy implements ICredentialVerifier {
 
 	protected URL m_remoteAuthUrl;
-	//	protected ICredentialVerifier m_externalPasswordVerifier;
+	// protected ICredentialVerifier m_externalPasswordVerifier;
 
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(CredentialVerifierProxy.class);
@@ -52,16 +52,18 @@ public class CredentialVerifierProxy implements ICredentialVerifier {
 	}
 
 	/**
-	 * Creates the remote authentication url as '{@link BackendUrlProperty}/auth'.
+	 * Creates the remote authentication url as
+	 * '{@link BackendUrlProperty}/auth'.
+	 * 
 	 * @return
 	 */
 	protected URL getRemoteAuthUrl() {
 		try {
 			String baseUrl = CONFIG.getPropertyValue(BackendUrlProperty.class);
 			return new URL(baseUrl + "/auth");
-		}
-		catch (final MalformedURLException e) {
-			throw BEANS.get(DefaultRuntimeExceptionTranslator.class).translate(e);
+		} catch (final MalformedURLException e) {
+			throw BEANS.get(DefaultRuntimeExceptionTranslator.class)
+					.translate(e);
 		}
 	}
 }

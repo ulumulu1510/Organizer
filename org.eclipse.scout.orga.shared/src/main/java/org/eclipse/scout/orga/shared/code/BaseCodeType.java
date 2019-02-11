@@ -18,16 +18,20 @@ public abstract class BaseCodeType extends AbstractCodeType<String, String> impl
 	}
 
 	@Override
-	protected List<? extends ICodeRow<String>> execLoadCodes(Class<? extends ICodeRow<String>> codeRowType) throws ProcessingException {
-		return BEANS.get(IApplicationCodeService.class).loadCodeRowsFromDatabase(getId());
+	protected List<? extends ICodeRow<String>> execLoadCodes(Class<? extends ICodeRow<String>> codeRowType)
+			throws ProcessingException {
+		return BEANS.get(IApplicationCodeService.class)
+				.loadCodeRowsFromDatabase(getId());
 	}
 
 	@Override
 	public void store(ICodeRow<String> code) {
-		if(!isDynamic()) {
-			throw new ProcessingException("Code type {} does not allow dynamic managing of codes.", getCodeTypeClass().getSimpleName());
+		if (!isDynamic()) {
+			throw new ProcessingException("Code type {} does not allow dynamic managing of codes.",
+					getCodeTypeClass().getSimpleName());
 		}
-		
-		BEANS.get(IApplicationCodeService.class).store(getId(), code);
+
+		BEANS.get(IApplicationCodeService.class)
+				.store(getId(), code);
 	}
 }

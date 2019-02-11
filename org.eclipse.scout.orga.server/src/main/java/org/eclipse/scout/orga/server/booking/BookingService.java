@@ -20,7 +20,7 @@ import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BookingService extends AbstractBaseService<Booking, BookingRecord>  implements IBookingService {
+public class BookingService extends AbstractBaseService<Booking, BookingRecord> implements IBookingService {
 
 	@Override
 	public Booking getTable() {
@@ -41,24 +41,28 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	public BookingTablePageData getBookingTableData(SearchFilter filter) {
 		BookingTablePageData pageData = new BookingTablePageData();
 
-		getAll()
-		.stream()
-		.forEach(booking -> recordToRowData(pageData.addRow(), booking));
+		getAll().stream()
+				.forEach(booking -> recordToRowData(pageData.addRow(), booking));
 
 		return pageData;
 	}
 
 	@Override
 	public BookingFormData load(BookingFormData formData) {
-		BookingRecord booking = getOrCreate(formData.getBookingId().getValue());
+		BookingRecord booking = getOrCreate(formData.getBookingId()
+				.getValue());
 		recordToFormData(formData, booking);
-		formData.getDocumentTable().setRows(BEANS.get(IDocumentService.class).getDocumentTableData(booking.getId()).getRows());
+		formData.getDocumentTable()
+				.setRows(BEANS.get(IDocumentService.class)
+						.getDocumentTableData(booking.getId())
+						.getRows());
 		return formData;
 	}
 
 	@Override
 	public BookingFormData store(BookingFormData formData) {
-		String bookingId = formData.getBookingId().getValue();
+		String bookingId = formData.getBookingId()
+				.getValue();
 		BookingRecord booking = getOrCreate(bookingId);
 		formDataToRecord(formData, booking);
 		store(booking.getId(), booking);
@@ -69,11 +73,11 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	public int delete(String id) {
 		int delete = super.delete(id);
 		if (delete > 0) {
-			BEANS.get(BookingDocumentService.class).delete(id);
+			BEANS.get(BookingDocumentService.class)
+					.delete(id);
 		}
 		return delete;
 	}
-
 
 	public BookingRecord getOrCreate(String bookingId) {
 		BookingRecord booking = get(bookingId);
@@ -85,30 +89,44 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 		booking = new BookingRecord();
 		booking.setId(TableUtility.createId());
 		booking.setActive(true);
-		booking.setUserId(ServerSession.get().getUserId());
+		booking.setUserId(ServerSession.get()
+				.getUserId());
 		return booking;
 	}
 
 	private void formDataToRecord(BookingFormData formData, BookingRecord booking) {
 		if (booking != null && formData != null) {
-			booking.setDescription(formData.getDescription().getValue());
-			booking.setDateFrom(formData.getDateFrom().getValue());
-			booking.setDateTo(formData.getDateTo().getValue());
-			booking.setNote(formData.getNote().getValue());
-			booking.setUserId(formData.getUserId().getValue());
-			booking.setActive(formData.getActive().getValue());
+			booking.setDescription(formData.getDescription()
+					.getValue());
+			booking.setDateFrom(formData.getDateFrom()
+					.getValue());
+			booking.setDateTo(formData.getDateTo()
+					.getValue());
+			booking.setNote(formData.getNote()
+					.getValue());
+			booking.setUserId(formData.getUserId()
+					.getValue());
+			booking.setActive(formData.getActive()
+					.getValue());
 		}
 	}
 
 	private void recordToFormData(BookingFormData formData, BookingRecord booking) {
 		if (booking != null && formData != null) {
-			formData.getBookingId().setValue(booking.getId());
-			formData.getDescription().setValue(booking.getDescription());
-			formData.getDateFrom().setValue(booking.getDateFrom());
-			formData.getDateTo().setValue(booking.getDateTo());
-			formData.getNote().setValue(booking.getNote());
-			formData.getUserId().setValue(booking.getUserId());
-			formData.getActive().setValue(booking.getActive());
+			formData.getBookingId()
+					.setValue(booking.getId());
+			formData.getDescription()
+					.setValue(booking.getDescription());
+			formData.getDateFrom()
+					.setValue(booking.getDateFrom());
+			formData.getDateTo()
+					.setValue(booking.getDateTo());
+			formData.getNote()
+					.setValue(booking.getNote());
+			formData.getUserId()
+					.setValue(booking.getUserId());
+			formData.getActive()
+					.setValue(booking.getActive());
 		}
 	}
 
@@ -118,7 +136,10 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 		row.setDateFrom(booking.getDateFrom());
 		row.setDateTo(booking.getDateTo());
 		if (booking.getDateFrom() != null && booking.getDateTo() != null) {
-			long timeDelta = booking.getDateTo().getTime() - booking.getDateFrom().getTime();
+			long timeDelta = booking.getDateTo()
+					.getTime()
+					- booking.getDateFrom()
+							.getTime();
 			row.setTimeDelta(new Date(timeDelta));
 		}
 		row.setNote(booking.getNote());
@@ -127,11 +148,8 @@ public class BookingService extends AbstractBaseService<Booking, BookingRecord> 
 	}
 
 	public Stream<BookingRecord> getBookingsInInterval(Date minDate, Date maxDate) {
-		return getContext()
-				.selectFrom(getTable())
-				.where(
-						getTable().DATE_FROM.gt(minDate),
-						getTable().DATE_TO.lt(maxDate))
+		return getContext().selectFrom(getTable())
+				.where(getTable().DATE_FROM.gt(minDate), getTable().DATE_TO.lt(maxDate))
 				.fetchStream();
 	}
 

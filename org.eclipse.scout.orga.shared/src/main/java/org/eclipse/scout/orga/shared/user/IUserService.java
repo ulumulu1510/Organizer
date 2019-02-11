@@ -12,37 +12,40 @@ import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
 
 @TunnelToServer
 public interface IUserService extends IService {
-	
+
 	/**
 	 * Returns true iff the provided user name already exists.
 	 */
 	boolean exists(String username);
-	
+
 	/**
 	 * Returns all user names.
 	 */
 	List<String> getUsernames();
 
 	/**
-	 * Returns the permissions for the user with the specified user name. 
+	 * Returns the permissions for the user with the specified user name.
 	 */
 	List<Permission> getPermissions(String username);
 
 	/**
-	 * Returns true iff the provided password is valid for the provider user name.
+	 * Returns true iff the provided password is valid for the provider user
+	 * name.
 	 */
-	boolean verifyPassword(String username, String password);	
-	
+	boolean verifyPassword(String username, String password);
+
 	UserFormData load(UserFormData formData);
 
 	UserFormData store(UserFormData formData);
-	
+
 	/**
 	 * Returns users all users as lookup rows.
-	 * @param activeOnly: restricts result set to active users if active is true
+	 * 
+	 * @param activeOnly:
+	 *            restricts result set to active users if active is true
 	 */
-	public List<? extends ILookupRow<String>> getLookupRows(boolean activeOnly);	
-	
+	public List<? extends ILookupRow<String>> getLookupRows(boolean activeOnly);
+
 	AbstractTablePageData getUserTableData(SearchFilter filter);
 
 	ProfileFormData load(ProfileFormData formData);

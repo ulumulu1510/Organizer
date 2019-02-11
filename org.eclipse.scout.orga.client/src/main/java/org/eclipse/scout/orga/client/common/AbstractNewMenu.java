@@ -29,7 +29,8 @@ public class AbstractNewMenu extends AbstractMenu {
 
 	@Override
 	protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-		return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection, TableMenuType.MultiSelection);
+		return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection,
+				TableMenuType.MultiSelection);
 	}
 
 }

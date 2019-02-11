@@ -43,16 +43,18 @@ public class BookingTablePage extends AbstractPageWithTable<BookingTable> {
 	@Override
 	protected IPage<?> execCreateChildPage(ITableRow row) {
 		BookingNodePage bookingNodePage = new BookingNodePage();
-		bookingNodePage.setBookingId(getTable().getIdColumn().getValue(row));
+		bookingNodePage.setBookingId(getTable().getIdColumn()
+				.getValue(row));
 		return bookingNodePage;
 	}
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(IBookingService.class).getBookingTableData(filter));
+		importPageData(BEANS.get(IBookingService.class)
+				.getBookingTableData(filter));
 	}
 
-	public class BookingTable extends AbstractExportableTable  {
+	public class BookingTable extends AbstractExportableTable {
 
 		@Override
 		public IOutline getPageOutline() {
@@ -233,10 +235,12 @@ public class BookingTablePage extends AbstractPageWithTable<BookingTable> {
 		public class EditMenu extends AbstractEditMenu {
 			@Override
 			protected void execAction() {
-				String id = getTable().getIdColumn().getSelectedValue();
+				String id = getTable().getIdColumn()
+						.getSelectedValue();
 				BookingForm bookingForm = new BookingForm();
 				bookingForm.addFormListener(new BookingFormListener());
-				bookingForm.getBookingIdField().setValue(id);
+				bookingForm.getBookingIdField()
+						.setValue(id);
 				bookingForm.startModify();
 			}
 		}
@@ -247,9 +251,10 @@ public class BookingTablePage extends AbstractPageWithTable<BookingTable> {
 			@Override
 			protected void execAction() {
 				IBookingService service = BEANS.get(IBookingService.class);
-				getTable().getIdColumn().getSelectedValues()
-					.stream()
-					.forEach(service::delete);
+				getTable().getIdColumn()
+						.getSelectedValues()
+						.stream()
+						.forEach(service::delete);
 				reloadPage();
 			}
 
@@ -263,7 +268,8 @@ public class BookingTablePage extends AbstractPageWithTable<BookingTable> {
 	protected class BookingFormListener implements FormListener {
 		@Override
 		public void formChanged(FormEvent e) {
-			if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm().isFormStored()) {
+			if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm()
+					.isFormStored()) {
 				reloadPage();
 			}
 		}

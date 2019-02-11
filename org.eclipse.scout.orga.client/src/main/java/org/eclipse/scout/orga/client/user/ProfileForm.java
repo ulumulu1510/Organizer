@@ -31,15 +31,18 @@ public class ProfileForm extends AbstractForm {
 
 	public ProfileForm() {
 		super();
-		setUserId(ClientSession.get().getUserId());
+		setUserId(ClientSession.get()
+				.getUserId());
 	}
 
 	public String getUserId() {
-		return getUserBox().getUserIdField().getValue();
+		return getUserBox().getUserIdField()
+				.getValue();
 	}
 
 	public void setUserId(String userId) {
-		getUserBox().getUserIdField().setValue(userId);
+		getUserBox().getUserIdField()
+				.setValue(userId);
 	}
 
 	public OptionUserBox getUserBox() {
@@ -87,7 +90,7 @@ public class ProfileForm extends AbstractForm {
 	protected String getConfiguredTitle() {
 		return TEXTS.get("Profile");
 	}
-	
+
 	public void startModify() {
 		getUserBox().setUserIdEnabled(false);
 		startInternalExclusive(new ModifyHandler());
@@ -289,7 +292,8 @@ public class ProfileForm extends AbstractForm {
 			String username = getUserId();
 			String password = getOldPasswordField().getValue();
 
-			if (!BEANS.get(IUserService.class).verifyPassword(username, password)) {
+			if (!BEANS.get(IUserService.class)
+					.verifyPassword(username, password)) {
 				getOldPasswordField().setError(TEXTS.get("PasswordInvalid"));
 				return false;
 			}
@@ -335,9 +339,10 @@ public class ProfileForm extends AbstractForm {
 			ProfileFormData formData = new ProfileFormData();
 			exportFormData(formData);
 			service.store(formData);
-			
+
 			// FIXME does not live refresh language to new locale
-			ClientSession.get().initializeLocaleTextsAndCodes();
+			ClientSession.get()
+					.initializeLocaleTextsAndCodes();
 		}
 	}
 

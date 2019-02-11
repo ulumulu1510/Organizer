@@ -34,23 +34,26 @@ public class ClientSession extends AbstractClientSession {
 
 	@Override
 	protected void execLoadSession() {
-	    initializeSharedVariables();
-	    initializePermissions();
+		initializeSharedVariables();
+		initializePermissions();
 		initializeLocaleTextsAndCodes();
-		
+
 		setDesktop(new Desktop());
-		
+
 		LOG.info("Created new client session for '{}' with locale '{}'", getUserId(), getLocale());
 	}
 
 	private void initializePermissions() {
-		BEANS.get(IAccessControlService.class).clearCacheOfCurrentUser();
+		BEANS.get(IAccessControlService.class)
+				.clearCacheOfCurrentUser();
 	}
 
 	public void initializeLocaleTextsAndCodes() {
-		Locale userLocale = BEANS.get(IUserService.class).getLocale(getUserId());
+		Locale userLocale = BEANS.get(IUserService.class)
+				.getLocale(getUserId());
 		setLocale(userLocale);
-		BEANS.get(ITextService.class).invalidateCache();
+		BEANS.get(ITextService.class)
+				.invalidateCache();
 		ApplicationCodeUtility.reloadAll();
 	}
 }

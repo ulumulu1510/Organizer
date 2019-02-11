@@ -20,87 +20,91 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class copied from {@link org.eclipse.scout.rt.server.commons.authentication.DevelopmentAccessController}
+ * Class copied from
+ * {@link org.eclipse.scout.rt.server.commons.authentication.DevelopmentAccessController}
  */
 @Bean
 public class ApplicationDevAccessController implements IAccessController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ApplicationDevAccessController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ApplicationDevAccessController.class);
 
-  private final AnonymousAccessController m_anonymousAccessController = BEANS.get(AnonymousAccessController.class);
-  private final AnonymousAuthConfig m_config = new AnonymousAuthConfig();
+	private final AnonymousAccessController m_anonymousAccessController = BEANS.get(AnonymousAccessController.class);
+	private final AnonymousAuthConfig m_config = new AnonymousAuthConfig();
 
-  private final AtomicBoolean m_warningLogged = new AtomicBoolean(false);
+	private final AtomicBoolean m_warningLogged = new AtomicBoolean(false);
 
-  public ApplicationDevAccessController init() {
-    init(new DevelopmentAuthConfig());
-    return this;
-  }
+	public ApplicationDevAccessController init() {
+		init(new DevelopmentAuthConfig());
+		return this;
+	}
 
-  /**
-   * Works with username 'root' instead of System.getProperty("user.name").
-   * Rest as implemented in {@link org.eclipse.scout.rt.server.commons.authentication.DevelopmentAccessController}.
-   */
-  public ApplicationDevAccessController init(final DevelopmentAuthConfig config) {
-    AnonymousAuthConfig anonymousAuthConfig = m_config
-        .withEnabled(config.isEnabled() && Platform.get().inDevelopmentMode())
-        .withUsername("root")
-        .withPutPrincipalOnSession(config.isPutPrincipalOnSession());
-    if (config.getPrincipalProducer() != null) {
-      anonymousAuthConfig.withPrincipalProducer(config.getPrincipalProducer());
-    }
-    m_anonymousAccessController.init(anonymousAuthConfig);
-    return this;
-  }
+	/**
+	 * Works with username 'root' instead of System.getProperty("user.name").
+	 * Rest as implemented in
+	 * {@link org.eclipse.scout.rt.server.commons.authentication.DevelopmentAccessController}.
+	 */
+	public ApplicationDevAccessController init(final DevelopmentAuthConfig config) {
+		AnonymousAuthConfig anonymousAuthConfig = m_config.withEnabled(config.isEnabled() && Platform.get()
+				.inDevelopmentMode())
+				.withUsername("root")
+				.withPutPrincipalOnSession(config.isPutPrincipalOnSession());
+		if (config.getPrincipalProducer() != null) {
+			anonymousAuthConfig.withPrincipalProducer(config.getPrincipalProducer());
+		}
+		m_anonymousAccessController.init(anonymousAuthConfig);
+		return this;
+	}
 
-  @Override
-  public boolean handle(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws IOException, ServletException {
-    if (m_config.isEnabled() && m_warningLogged.compareAndSet(false, true)) {
-      LOG.warn("+++ Development access control with user {}", m_config.getUsername());
-    }
-    return m_anonymousAccessController.handle(request, response, chain);
-  }
+	@Override
+	public boolean handle(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain)
+			throws IOException, ServletException {
+		if (m_config.isEnabled() && m_warningLogged.compareAndSet(false, true)) {
+			LOG.warn("+++ Development access control with user {}", m_config.getUsername());
+		}
+		return m_anonymousAccessController.handle(request, response, chain);
+	}
 
-  @Override
-  public void destroy() {
-    m_anonymousAccessController.destroy();
-  }
+	@Override
+	public void destroy() {
+		m_anonymousAccessController.destroy();
+	}
 
-  public static class DevelopmentAuthConfig {
+	public static class DevelopmentAuthConfig {
 
-    private boolean m_enabled = true;
-    private IPrincipalProducer m_principalProducer = null;
-    private boolean m_putPrincipalOnSession = true;
+		private boolean m_enabled = true;
+		private IPrincipalProducer m_principalProducer = null;
+		private boolean m_putPrincipalOnSession = true;
 
-    public boolean isEnabled() {
-      return m_enabled;
-    }
+		public boolean isEnabled() {
+			return m_enabled;
+		}
 
-    public DevelopmentAuthConfig withEnabled(final boolean enabled) {
-      m_enabled = enabled;
-      return this;
-    }
+		public DevelopmentAuthConfig withEnabled(final boolean enabled) {
+			m_enabled = enabled;
+			return this;
+		}
 
-    public IPrincipalProducer getPrincipalProducer() {
-      return m_principalProducer;
-    }
+		public IPrincipalProducer getPrincipalProducer() {
+			return m_principalProducer;
+		}
 
-    /**
-     * Sets the {@link IPrincipalProducer} to produce a {@link Principal} for authenticated users. By default, the inner
-     * {@link AnonymousAccessController}'s principal producer is used.
-     */
-    public DevelopmentAuthConfig withPrincipalProducer(final IPrincipalProducer principalProducer) {
-      m_principalProducer = principalProducer;
-      return this;
-    }
+		/**
+		 * Sets the {@link IPrincipalProducer} to produce a {@link Principal}
+		 * for authenticated users. By default, the inner
+		 * {@link AnonymousAccessController}'s principal producer is used.
+		 */
+		public DevelopmentAuthConfig withPrincipalProducer(final IPrincipalProducer principalProducer) {
+			m_principalProducer = principalProducer;
+			return this;
+		}
 
-    public boolean isPutPrincipalOnSession() {
-      return m_putPrincipalOnSession;
-    }
+		public boolean isPutPrincipalOnSession() {
+			return m_putPrincipalOnSession;
+		}
 
-    public DevelopmentAuthConfig withPutPrincipalOnSession(final boolean putPrincipalOnSession) {
-      m_putPrincipalOnSession = putPrincipalOnSession;
-      return this;
-    }
-  }
+		public DevelopmentAuthConfig withPutPrincipalOnSession(final boolean putPrincipalOnSession) {
+			m_putPrincipalOnSession = putPrincipalOnSession;
+			return this;
+		}
+	}
 }

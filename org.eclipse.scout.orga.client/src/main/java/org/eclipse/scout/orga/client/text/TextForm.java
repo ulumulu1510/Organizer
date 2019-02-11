@@ -124,7 +124,7 @@ public class TextForm extends AbstractForm {
 				protected String getConfiguredLabel() {
 					return TEXTS.get("LocaleFilter");
 				}
-				
+
 				@Override
 				protected Class<? extends ICodeType<?, String>> getConfiguredCodeType() {
 					return LocaleCodeType.class;
@@ -176,7 +176,7 @@ public class TextForm extends AbstractForm {
 						protected int getConfiguredWidth() {
 							return 200;
 						}
-						
+
 						@Override
 						protected Class<? extends ICodeType<?, String>> getConfiguredCodeType() {
 							return LocaleCodeType.class;
@@ -204,8 +204,10 @@ public class TextForm extends AbstractForm {
 						protected void execCompleteEdit(ITableRow row, IFormField editingField) {
 							String value = ((AbstractStringField) editingField).getValue();
 
-							row.getCellForUpdate(getTranslationColumn()).setValue(value);
-							row.getCellForUpdate(getHasTextColumn()).setValue(StringUtility.hasText(value));
+							row.getCellForUpdate(getTranslationColumn())
+									.setValue(value);
+							row.getCellForUpdate(getHasTextColumn())
+									.setValue(StringUtility.hasText(value));
 						}
 					}
 
@@ -269,54 +271,63 @@ public class TextForm extends AbstractForm {
 		String key = getKey();
 		String localeFilter = getLocaleFilterField().getValue();
 		boolean textFilter = getHasTextFilterField().getValue();
-		Map<String, String> map = BEANS.get(ITextService.class).getTexts(key);
+		Map<String, String> map = BEANS.get(ITextService.class)
+				.getTexts(key);
 
 		Table table = getTranslationTableField().getTable();
 		table.deleteAllRows();
 
 		CODES.findCodeTypeById(LocaleCodeType.ID)
-		.getCodes()
-		.stream()
-		.forEach(localeCode -> {
-			String locale = (String) localeCode.getId();
-			boolean addLocale = true;
-			boolean hasText = map.containsKey(locale);
+				.getCodes()
+				.stream()
+				.forEach(localeCode -> {
+					String locale = (String) localeCode.getId();
+					boolean addLocale = true;
+					boolean hasText = map.containsKey(locale);
 
-			if (localeFilter != null && !localeFilter.contentEquals(Locale.ROOT.toLanguageTag())) {
-				if (!locale.startsWith(localeFilter)) {
-					addLocale = false;
-				}
-			}
+					if (localeFilter != null && !localeFilter.contentEquals(Locale.ROOT.toLanguageTag())) {
+						if (!locale.startsWith(localeFilter)) {
+							addLocale = false;
+						}
+					}
 
-			if (textFilter && !hasText) {
-				addLocale = false;
-			}
+					if (textFilter && !hasText) {
+						addLocale = false;
+					}
 
-			if (addLocale) {
-				ITableRow row = table.createRow();
-				table.getLocaleColumn().setValue(row, locale);
-				table.getTranslationColumn().setValue(row, map.get(locale));
-				table.getHasTextColumn().setValue(row, hasText);
-				table.addRow(row);
-			}
-		});
+					if (addLocale) {
+						ITableRow row = table.createRow();
+						table.getLocaleColumn()
+								.setValue(row, locale);
+						table.getTranslationColumn()
+								.setValue(row, map.get(locale));
+						table.getHasTextColumn()
+								.setValue(row, hasText);
+						table.addRow(row);
+					}
+				});
 	}
 
 	private void saveTranslations() {
 		String key = getKey();
 		Table table = getTranslationTableField().getTable();
-		ITextService service = BEANS.get(ITextService.class); 
+		ITextService service = BEANS.get(ITextService.class);
 
 		table.getRows()
-		.stream()
-		.forEach(row -> {
-			String locale = (String) row.getKeyValues().get(0);
-			String text = (String) row.getCell(table.getTranslationColumn()).getValue();
+				.stream()
+				.forEach(row -> {
+					String locale = (String) row.getKeyValues()
+							.get(0);
+					String text = (String) row.getCell(table.getTranslationColumn())
+							.getValue();
 
-			if(StringUtility.hasText(text)) { service.addText(key, locale, text); }
-			else { service.deleteText(key, locale);	}
-		});
-		
+					if (StringUtility.hasText(text)) {
+						service.addText(key, locale, text);
+					} else {
+						service.deleteText(key, locale);
+					}
+				});
+
 		service.invalidateCache();
 	}
 }

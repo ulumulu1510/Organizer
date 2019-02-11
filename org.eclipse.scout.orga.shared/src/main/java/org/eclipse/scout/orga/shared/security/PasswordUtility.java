@@ -9,19 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Password utility based on BCrypt algorithm.
- * Sources copied from Spring repo
+ * Password utility based on BCrypt algorithm. Sources copied from Spring repo
  * https://github.com/spring-projects/spring-security/blob/master/crypto/src/main/java/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.java
  * https://github.com/spring-projects/spring-security/blob/master/crypto/src/main/java/org/springframework/security/crypto/bcrypt/BCrypt.java
- * Spring sources have most likely been copied from http://www.mindrot.org/projects/jBCrypt/
+ * Spring sources have most likely been copied from
+ * http://www.mindrot.org/projects/jBCrypt/
  */
 public class PasswordUtility {
 
 	public static final int PASSWORD_LENGTH_MIN = 4;
 	public static final int PASSWORD_LENGTH_MAX = 64;
 
-	private static Pattern BCRYPT_PATTERN = Pattern
-			.compile("\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
+	private static Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
 
 	private static final Logger LOG = LoggerFactory.getLogger(PasswordUtility.class);
 
@@ -40,8 +39,8 @@ public class PasswordUtility {
 	}
 
 	/**
-	 * Provides a password hash for the provided plain text password. 
-	 * Hashing is done using BCrypt 
+	 * Provides a password hash for the provided plain text password. Hashing is
+	 * done using BCrypt
 	 */
 	public static String calculateEncodedPassword(String passwordPlain) {
 		return BCrypt.hashpw(passwordPlain, BCrypt.gensalt());
@@ -58,7 +57,8 @@ public class PasswordUtility {
 			return false;
 		}
 
-		if (!BCRYPT_PATTERN.matcher(passwordEncoded).matches()) {
+		if (!BCRYPT_PATTERN.matcher(passwordEncoded)
+				.matches()) {
 			LOG.warn("Encoded password does not look like BCrypt");
 			return false;
 		}

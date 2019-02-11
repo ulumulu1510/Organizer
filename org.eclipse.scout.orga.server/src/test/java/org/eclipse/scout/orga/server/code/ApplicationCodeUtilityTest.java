@@ -42,7 +42,7 @@ public class ApplicationCodeUtilityTest {
 
 	@After
 	public void teardown() throws SQLException {
-		if(connection != null) {
+		if (connection != null) {
 			connection.close();
 		}
 	}
@@ -51,8 +51,10 @@ public class ApplicationCodeUtilityTest {
 	public void testStaticSexCodes() {
 		// test exists methods
 		assertTrue("Sex code type not found", ApplicationCodeUtility.exists(SexCodeType.class));
-		assertTrue("Male sex code not found", ApplicationCodeUtility.exists(SexCodeType.class, TableDataInitializer.CODE_MALE.getId()));
-		assertTrue("Female sex code not found", ApplicationCodeUtility.exists(SexCodeType.class, TableDataInitializer.CODE_FEMALE.getId()));
+		assertTrue("Male sex code not found",
+				ApplicationCodeUtility.exists(SexCodeType.class, TableDataInitializer.CODE_MALE.getId()));
+		assertTrue("Female sex code not found",
+				ApplicationCodeUtility.exists(SexCodeType.class, TableDataInitializer.CODE_FEMALE.getId()));
 
 		// test get methods via code type class
 		ICode<String> mCode = ApplicationCodeUtility.getCode(SexCodeType.class, TableDataInitializer.CODE_MALE.getId());
@@ -60,7 +62,7 @@ public class ApplicationCodeUtilityTest {
 		assertNotNull("Male code not found", mCode);
 		assertEquals("Male code has unexpected ID", TableDataInitializer.CODE_MALE.getId(), mCode.getId());
 		assertTrue("Male code is inactive", mCode.isActive());
-		
+
 		// test get methods via code type id
 		assertNotNull("Sex code type not found", ApplicationCodeUtility.getCodeType(SexCodeType.ID));
 		ICode<String> mCode2 = ApplicationCodeUtility.getCode(SexCodeType.ID, TableDataInitializer.CODE_MALE.getId());
@@ -73,7 +75,7 @@ public class ApplicationCodeUtilityTest {
 	public void testDynamicSexCodes() {
 		List<? extends ICode<String>> codes = ApplicationCodeUtility.getCodes(SexCodeType.class);
 		assertEquals("Unexpected number of sex codes", 3, codes.size());
-		
+
 		ICode<String> uCode = ApplicationCodeUtility.getCode(SexCodeType.class, "U");
 		assertNotNull("Undefined sex code not found", uCode);
 		assertEquals("Undefined code has unexpected ID", TableDataInitializer.CODE_UNDEFINED.getId(), uCode.getId());
@@ -83,26 +85,26 @@ public class ApplicationCodeUtilityTest {
 	@Test
 	public void testDynamicLocaleCodes() {
 		assertTrue("Locale code type not found", ApplicationCodeUtility.exists(LocaleCodeType.class));
-		
+
 		List<? extends ICode<String>> codes = ApplicationCodeUtility.getCodes(LocaleCodeType.class);
-		assertTrue("Unexpected number of locale codes. Expected 160 or more, found" + codes.size(), codes.size() >= 160);
+		assertTrue("Unexpected number of locale codes. Expected 160 or more, found" + codes.size(),
+				codes.size() >= 160);
 		assertTrue("Locale code 'de-CH' not found", ApplicationCodeUtility.exists(LocaleCodeType.class, "de-CH"));
 	}
 
 	protected DSLContext getContext() {
 		try {
-			if(connection == null) {
+			if (connection == null) {
 				connection = InitializerApplication.getConnection();
 			}
-			
-			if(!connection.isValid(1)) {
+
+			if (!connection.isValid(1)) {
 				connection.close();
 				connection = InitializerApplication.getConnection();
 			}
-			
+
 			return InitializerApplication.getContext(connection);
-		} 
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}

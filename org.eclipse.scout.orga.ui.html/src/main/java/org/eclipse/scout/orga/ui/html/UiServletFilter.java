@@ -32,16 +32,13 @@ public class UiServletFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		m_trivialAccessController = BEANS.get(TrivialAccessController.class).init(
-				new TrivialAuthConfig()
-				.withExclusionFilter(filterConfig.getInitParameter("filter-exclude"))
-				.withLoginPageInstalled(true)
-				);
+		m_trivialAccessController = BEANS.get(TrivialAccessController.class)
+				.init(new TrivialAuthConfig().withExclusionFilter(filterConfig.getInitParameter("filter-exclude"))
+						.withLoginPageInstalled(true));
 		m_formBasedAccessController = BEANS.get(FormBasedAccessController.class)
-				.init(new FormBasedAuthConfig()
-				.withCredentialVerifier(BEANS.get(CredentialVerifierProxy.class))
-				);
-		m_developmentAccessController = BEANS.get(ApplicationDevAccessController.class).init();
+				.init(new FormBasedAuthConfig().withCredentialVerifier(BEANS.get(CredentialVerifierProxy.class)));
+		m_developmentAccessController = BEANS.get(ApplicationDevAccessController.class)
+				.init();
 	}
 
 	@Override
@@ -62,7 +59,8 @@ public class UiServletFilter implements Filter {
 			return;
 		}
 
-		BEANS.get(ServletFilterHelper.class).forwardToLoginForm(req, resp);
+		BEANS.get(ServletFilterHelper.class)
+				.forwardToLoginForm(req, resp);
 	}
 
 	@Override

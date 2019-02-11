@@ -14,12 +14,15 @@ public interface IVisField extends IFormField {
 	String PROP_END = "end";
 
 	Map<String, List<VisItem>> getPropertyUsers();
+
 	void setPropertyUsers(Map<String, List<VisItem>> users);
 
 	Date getPropertyStart();
+
 	void setPropertyStart(Date start);
 
 	Date getPropertyEnd();
+
 	void setPropertyEnd(Date end);
 
 }

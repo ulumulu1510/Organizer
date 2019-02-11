@@ -36,9 +36,8 @@ import org.eclipse.scout.orga.shared.text.ITextService;
 public class ApplicationCodeForm extends AbstractForm {
 
 	public enum DisplayMode {
-		CREATE,
-		EDIT;
-	}	
+		CREATE, EDIT;
+	}
 
 	private String codeTypeId;
 
@@ -72,20 +71,24 @@ public class ApplicationCodeForm extends AbstractForm {
 	public Object computeExclusiveKey() {
 		String typeId = getCodeTypeId();
 		String codeId = getCodeIdField().getValue();
-		return String.format("%s %s", typeId, codeId); 
+		return String.format("%s %s", typeId, codeId);
 	}
 
 	protected String calculateSubTitle() {
 		String typeId = getCodeTypeId();
 		String codeId = getCodeIdField().getValue();
-		String locale = ClientSession.get().getLocale().toLanguageTag();
-		String typeText = BEANS.get(ITextService.class).getText(typeId, locale);
-		String codeText = BEANS.get(ITextService.class).getText(codeId, locale);
-		
-		if(codeText == null) {
+		String locale = ClientSession.get()
+				.getLocale()
+				.toLanguageTag();
+		String typeText = BEANS.get(ITextService.class)
+				.getText(typeId, locale);
+		String codeText = BEANS.get(ITextService.class)
+				.getText(codeId, locale);
+
+		if (codeText == null) {
 			codeText = String.format("[%s]", codeId);
 		}
-		
+
 		return String.format("%s %s", typeText, codeText);
 	}
 
@@ -241,7 +244,8 @@ public class ApplicationCodeForm extends AbstractForm {
 
 			ApplicationCodeFormData formData = new ApplicationCodeFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IApplicationCodeService.class).load(formData);
+			formData = BEANS.get(IApplicationCodeService.class)
+					.load(formData);
 			importFormData(formData);
 
 			getForm().setSubTitle(calculateSubTitle());
@@ -258,21 +262,23 @@ public class ApplicationCodeForm extends AbstractForm {
 		}
 	}
 
-	private void load(Permission permission)  {
+	private void load(Permission permission) {
 		setEnabledPermission(permission);
 
 		ApplicationCodeFormData formData = new ApplicationCodeFormData();
 		exportFormData(formData);
-		formData = BEANS.get(IApplicationCodeService.class).load(formData);
+		formData = BEANS.get(IApplicationCodeService.class)
+				.load(formData);
 		importFormData(formData);
 
 		setSubTitle(calculateSubTitle());
 	}
 
-	private void store()  {
+	private void store() {
 		ApplicationCodeFormData formData = new ApplicationCodeFormData();
 		exportFormData(formData);
-		formData = BEANS.get(IApplicationCodeService.class).store(formData);
+		formData = BEANS.get(IApplicationCodeService.class)
+				.store(formData);
 		ApplicationCodeUtility.reload(formData.getCodeTypeId());
 	}
 }

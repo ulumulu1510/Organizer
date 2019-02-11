@@ -17,7 +17,8 @@ public interface IApplicationCodeService extends IService {
 
 	/**
 	 * (Re)loads dynamic codes by loading codes from the database.
-	 * @return 
+	 * 
+	 * @return
 	 */
 	List<ICodeRow<String>> loadCodeRowsFromDatabase(String codeTypeId);
 

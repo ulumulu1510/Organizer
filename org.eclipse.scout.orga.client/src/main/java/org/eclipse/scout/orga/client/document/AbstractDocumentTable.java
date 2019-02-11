@@ -151,12 +151,13 @@ public abstract class AbstractDocumentTable extends AbstractExportableTable {
 	}
 
 	@Override
-    protected void execDrop(ITableRow row, TransferObject t) {
+	protected void execDrop(ITableRow row, TransferObject t) {
 		String bookingId = getBookingId();
-    	DownloadUtility.upload(t, bookingId);
-    	importFieldData(BEANS.get(IDocumentService.class).getDocumentTableData(bookingId));
-    	reloadTableData();
-    }
+		DownloadUtility.upload(t, bookingId);
+		importFieldData(BEANS.get(IDocumentService.class)
+				.getDocumentTableData(bookingId));
+		reloadTableData();
+	}
 
 	@Override
 	protected int getConfiguredDropType() {
@@ -175,7 +176,8 @@ public abstract class AbstractDocumentTable extends AbstractExportableTable {
 		protected void execAction() {
 			int row = getSelectedRow().getRowIndex();
 			String docId = getIdColumn().getValue(row);
-			BinaryResource doc = BEANS.get(IDocumentService.class).getResource(docId);
+			BinaryResource doc = BEANS.get(IDocumentService.class)
+					.getResource(docId);
 			DownloadUtility.download(doc);
 		}
 	}
@@ -187,10 +189,11 @@ public abstract class AbstractDocumentTable extends AbstractExportableTable {
 		protected void execAction() {
 			IDocumentService service = BEANS.get(IDocumentService.class);
 			getIdColumn().getSelectedValues()
-				.stream()
-				.forEach(service::delete);
-			importFieldData(BEANS.get(IDocumentService.class).getDocumentTableData(getBookingId()));
-	    	reloadTableData();
+					.stream()
+					.forEach(service::delete);
+			importFieldData(BEANS.get(IDocumentService.class)
+					.getDocumentTableData(getBookingId()));
+			reloadTableData();
 		}
 
 		@Override

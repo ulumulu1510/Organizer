@@ -168,7 +168,8 @@ public class UserTablePage extends AbstractPageWithTable<Table> {
 
 			@Override
 			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-				return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection, TableMenuType.MultiSelection);
+				return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection,
+						TableMenuType.MultiSelection);
 			}
 
 			@Override

@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Booking extends TableImpl<BookingRecord> {
 
-    private static final long serialVersionUID = -620830030;
+    private static final long serialVersionUID = -963288910;
 
     /**
      * The reference instance of <code>core.BOOKING</code>
@@ -78,14 +78,14 @@ public class Booking extends TableImpl<BookingRecord> {
     public final TableField<BookingRecord, String> NOTE = createField("NOTE", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "");
 
     /**
-     * The column <code>core.BOOKING.USER_ID</code>.
-     */
-    public final TableField<BookingRecord, String> USER_ID = createField("USER_ID", org.jooq.impl.SQLDataType.VARCHAR(36), this, "");
-
-    /**
      * The column <code>core.BOOKING.ACTIVE</code>.
      */
     public final TableField<BookingRecord, Boolean> ACTIVE = createField("ACTIVE", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>core.BOOKING.USER_ID</code>.
+     */
+    public final TableField<BookingRecord, String> USER_ID = createField("USER_ID", org.jooq.impl.SQLDataType.VARCHAR(36), this, "");
 
     /**
      * Create a <code>core.BOOKING</code> table reference

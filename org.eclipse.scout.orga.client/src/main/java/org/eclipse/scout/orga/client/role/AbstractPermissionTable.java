@@ -10,7 +10,7 @@ import org.eclipse.scout.orga.client.common.AbstractExportableTable;
 import org.eclipse.scout.orga.client.text.AbstractTranslateMenu;
 
 public abstract class AbstractPermissionTable extends AbstractExportableTable {
-	
+
 	protected abstract void execReloadPage();
 
 	@Override
@@ -50,7 +50,7 @@ public abstract class AbstractPermissionTable extends AbstractExportableTable {
 		protected void reload() {
 			execReloadPage();
 		}
-		
+
 		@Override
 		public void execAction() {
 			super.execAction();

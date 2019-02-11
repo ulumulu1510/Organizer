@@ -14,6 +14,7 @@ public class UserLookupCall extends LocalLookupCall<String> {
 
 	@Override
 	protected List<? extends ILookupRow<String>> execCreateLookupRows() {
-		return BEANS.get(IUserService.class).getLookupRows(false);
+		return BEANS.get(IUserService.class)
+				.getLookupRows(false);
 	}
 }

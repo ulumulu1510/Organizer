@@ -12,10 +12,11 @@ import org.eclipse.scout.orga.client.text.TextForm;
 import org.eclipse.scout.orga.shared.FontAwesomeIcons;
 
 public abstract class AbstractTranslateMenu extends AbstractMenu {
-	
+
 	protected abstract String getObjectId();
+
 	protected abstract void reloadTablePage();
-	
+
 	@Override
 	protected String getConfiguredText() {
 		return TEXTS.get("Translate");

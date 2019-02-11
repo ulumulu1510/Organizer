@@ -51,8 +51,11 @@ public class ApplicationCodeTablePage extends AbstractPageWithTable<Table> {
 	@Override
 	protected String getConfiguredTitle() {
 		String key = codeType.getId();
-		String locale = ClientSession.get().getLocale().toLanguageTag();
-		return BEANS.get(ITextService.class).getText(key, locale);
+		String locale = ClientSession.get()
+				.getLocale()
+				.toLanguageTag();
+		return BEANS.get(ITextService.class)
+				.getText(key, locale);
 	}
 
 	@Override
@@ -104,7 +107,8 @@ public class ApplicationCodeTablePage extends AbstractPageWithTable<Table> {
 
 			@Override
 			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-				return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection, TableMenuType.MultiSelection);
+				return CollectionUtility.hashSet(TableMenuType.EmptySpace, TableMenuType.SingleSelection,
+						TableMenuType.MultiSelection);
 			}
 
 			@Override
@@ -150,7 +154,8 @@ public class ApplicationCodeTablePage extends AbstractPageWithTable<Table> {
 				ApplicationCodeForm form = new ApplicationCodeForm();
 				form.setDisplayMode(DisplayMode.EDIT);
 				form.setCodeTypeId(codeType.getId());
-				form.getCodeIdField().setValue(getIdColumn().getSelectedValue());
+				form.getCodeIdField()
+						.setValue(getIdColumn().getSelectedValue());
 				form.addFormListener(new ApplicationCodeFormListener());
 				form.startModify();
 			}
@@ -198,7 +203,8 @@ public class ApplicationCodeTablePage extends AbstractPageWithTable<Table> {
 
 			@Override
 			public void formChanged(FormEvent e) {
-				if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm().isFormStored()) {
+				if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm()
+						.isFormStored()) {
 					ApplicationCodeUtility.reload(codeType.getClass());
 					reloadPage();
 				}

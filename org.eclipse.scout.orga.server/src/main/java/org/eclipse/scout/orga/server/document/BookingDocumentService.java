@@ -14,7 +14,8 @@ import org.eclipse.scout.orga.database.or.core.tables.records.BookingDocumentRec
 import org.eclipse.scout.orga.server.common.AbstractBaseService;
 import org.eclipse.scout.orga.shared.document.IDocumentService;
 
-public class BookingDocumentService  extends AbstractBaseService<BookingDocument, BookingDocumentRecord> implements IService{
+public class BookingDocumentService extends AbstractBaseService<BookingDocument, BookingDocumentRecord>
+		implements IService {
 
 	@Override
 	public BookingDocument getTable() {
@@ -33,18 +34,16 @@ public class BookingDocumentService  extends AbstractBaseService<BookingDocument
 
 	@Override
 	public int delete(String id) {
-		List<BookingDocumentRecord> records = getContext()
-				.selectFrom(getTable())
+		List<BookingDocumentRecord> records = getContext().selectFrom(getTable())
 				.where(getIdColumn().eq(id))
 				.fetchStream()
 				.collect(Collectors.toList());
 		int delete = super.delete(id);
 		if (delete > 0) {
 			IDocumentService service = BEANS.get(IDocumentService.class);
-			records
-			.stream()
-			.map(BookingDocumentRecord::getDocumentId)
-			.forEach(service::delete);
+			records.stream()
+					.map(BookingDocumentRecord::getDocumentId)
+					.forEach(service::delete);
 		}
 		return delete;
 	}

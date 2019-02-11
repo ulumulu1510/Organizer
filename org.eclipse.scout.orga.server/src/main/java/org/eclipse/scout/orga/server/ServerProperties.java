@@ -14,13 +14,13 @@ import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.jooq.SQLDialect;
 
 public class ServerProperties {
-	
+
 	// server property keys
 	public static final String KEY_SUPERUSER_SUBJECT = "org.eclipse.scout.orga.server.superuser";
-	
+
 	public static final String KEY_AUTOCREATE = "org.eclipse.scout.orga.server.sql.autocreate";
 	public static final String KEY_AUTOPOPULATE = "org.eclipse.scout.orga.server.sql.autopopulate";
-	
+
 	public static final String KEY_DRIVER = "org.eclipse.scout.orga.server.sql.driver";
 	public static final String KEY_DIALECT = "org.eclipse.scout.orga.server.sql.dialect";
 	public static final String KEY_MAPPING = "org.eclipse.scout.orga.server.sql.jdbc.mapping.name";
@@ -38,7 +38,6 @@ public class ServerProperties {
 	public static final String DEFAULT_MAPPING = "jdbc:sqlserver://192.168.99.100:1433;DatabaseName=SCOUT";
 	public static final String DEFAULT_USERNAME = "SA";
 	public static final String DEFAULT_PASSWORD = "<YourStrong!Passw0rd>";
-	
 
 	public static class DriverProperty extends AbstractStringConfigProperty {
 
@@ -57,7 +56,7 @@ public class ServerProperties {
 			return "Classname of the JDBC driver";
 		}
 	}
-	
+
 	public static class DialectProperty extends AbstractConfigProperty<SQLDialect, String> {
 
 		@Override
@@ -75,13 +74,12 @@ public class ServerProperties {
 			String dialect = ObjectUtility.nvl(value, "");
 			try {
 				return SQLDialect.valueOf(dialect);
-			}
-			catch (Exception e) {
-			    throw new PlatformException("Invalid SQL dialect '" + dialect + "' for property '" + getKey() 
-			    + "'. Valid names are " + getValidValues());
+			} catch (Exception e) {
+				throw new PlatformException("Invalid SQL dialect '" + dialect + "' for property '" + getKey()
+						+ "'. Valid names are " + getValidValues());
 			}
 		}
-		
+
 		private String getValidValues() {
 			return "'" + StringUtility.join("','", Arrays.asList(SQLDialect.values())) + "'";
 		}
@@ -106,7 +104,7 @@ public class ServerProperties {
 
 		@Override
 		public String description() {
-		return "Boolean property to create database if there is none";
+			return "Boolean property to create database if there is none";
 		}
 	}
 

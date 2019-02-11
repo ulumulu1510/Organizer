@@ -30,7 +30,6 @@ public class GeneratorApplication {
 	public static final String OUTPUT_DIRECTORY = "src/generated/java";
 	public static final String OUTPUT_PACKAGE = "org.eclipse.scout.orga.database.or";
 
-	//TODO adapt to your set up
 	public static final String DB_USER = "postgres";
 	public static final String DB_PASSWORD = "securePassw0rd";
 	public static final String DB_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -38,7 +37,7 @@ public class GeneratorApplication {
 	public static final String DB_JOOQ_NAME = "org.jooq.util.derby.DerbyDatabase";
 	public static final SQLDialect DB_DIALECT = SQLDialect.DERBY;
 
-	// TODO ask how to do this for uuid, does not seem to work (using workaround with varchar(46) for id columns now
+	// Ask how to do this for uuid, does not seem to work (using workaround with varchar(46) for id columns now
 	private static final String CONVERTER_DATE = "org.eclipse.scout.orga.database.generator.converter.DateConverter";
 	private static final String CONVERTER_LONG = "org.eclipse.scout.orga.database.generator.converter.LongConverter";
 	private static final String CONVERTER_UUID = "org.eclipse.scout.orga.database.generator.converter.UUIDConverter";

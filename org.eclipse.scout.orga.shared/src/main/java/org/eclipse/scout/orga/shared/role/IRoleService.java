@@ -15,6 +15,6 @@ public interface IRoleService extends IService {
 	RoleFormData store(RoleFormData formData);
 
 	AbstractTablePageData getRoleTableData(SearchFilter filter);
-	
+
 	AbstractTablePageData getPermissionTableData(SearchFilter filter);
 }

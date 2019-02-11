@@ -59,7 +59,8 @@ public abstract class AbstractDirtyFormHandler extends AbstractFormHandler {
 				try {
 					execDirtyStatusChanged(dirty);
 				} catch (final Exception e) {
-					BEANS.get(ExceptionHandler.class).handle(e);
+					BEANS.get(ExceptionHandler.class)
+							.handle(e);
 				}
 			}
 		};

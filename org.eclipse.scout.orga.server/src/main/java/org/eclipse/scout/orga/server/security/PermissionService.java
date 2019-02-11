@@ -33,7 +33,7 @@ public class PermissionService implements IPermissionService {
 
 	// TODO move this list to config.properties
 	// list of Scout permissions that are irrelevant for this application
-	public static final String [] EXCLUDE_ARRAY = new String [] {
+	public static final String[] EXCLUDE_ARRAY = new String[] {
 			"org.eclipse.scout.rt.shared.security.CreateGlobalBookmarkPermission",
 			"org.eclipse.scout.rt.shared.security.ReadGlobalBookmarkPermission",
 			"org.eclipse.scout.rt.shared.security.UpdateGlobalBookmarkPermission",
@@ -49,8 +49,7 @@ public class PermissionService implements IPermissionService {
 			"org.eclipse.scout.rt.shared.security.ReadDiagnosticServletPermission",
 			"org.eclipse.scout.rt.shared.security.UpdateDiagnosticServletPermission",
 			"org.eclipse.scout.rt.shared.security.RemoteServiceAccessPermission",
-			"org.eclipse.scout.rt.shared.security.UpdateServiceConfigurationPermission"
-	};
+			"org.eclipse.scout.rt.shared.security.UpdateServiceConfigurationPermission" };
 
 	private static final Logger LOG = LoggerFactory.getLogger(PermissionService.class);
 
@@ -60,7 +59,8 @@ public class PermissionService implements IPermissionService {
 
 	private void checkTranslations(Class<? extends Permission> permission) {
 		String id = permission.getName();
-		String prefix = permission.getPackage().getName();
+		String prefix = permission.getPackage()
+				.getName();
 		String group = prefix.substring(prefix.lastIndexOf(".") + 1);
 		String key = permission.getSimpleName();
 
@@ -70,11 +70,13 @@ public class PermissionService implements IPermissionService {
 
 	private void checkTranslation(String key, String text) {
 		if (StringUtility.hasText(key)) {
-			List<TextRecord> texts = BEANS.get(TextService.class).getAll(key);
+			List<TextRecord> texts = BEANS.get(TextService.class)
+					.getAll(key);
 
-			if(texts.size() == 0) {
+			if (texts.size() == 0) {
 				String t1 = StringUtility.splitCamelCase(text);
-				String t2 = t1.substring(0, 1).toUpperCase() + t1.substring(1);
+				String t2 = t1.substring(0, 1)
+						.toUpperCase() + t1.substring(1);
 
 				if (t2.endsWith(" Permission")) {
 					t2 = t2.substring(0, t2.indexOf(" Permission"));
@@ -82,7 +84,8 @@ public class PermissionService implements IPermissionService {
 
 				String locale = Locale.ROOT.toLanguageTag();
 				String id = TextService.toId(locale, key);
-				BEANS.get(TextService.class).store(id, new TextRecord(key, locale, t2));
+				BEANS.get(TextService.class)
+						.store(id, new TextRecord(key, locale, t2));
 			}
 		}
 	}
@@ -99,11 +102,13 @@ public class PermissionService implements IPermissionService {
 	}
 
 	/**
-	 * Gets permission from cache via it's class name (i.e. permissionclass.getName()).
+	 * Gets permission from cache via it's class name (i.e.
+	 * permissionclass.getName()).
 	 *
 	 * @param key
-	 *          the fully classified class name of the permission
-	 * @return the permission class or null if no such permission exists in the cache
+	 *            the fully classified class name of the permission
+	 * @return the permission class or null if no such permission exists in the
+	 *         cache
 	 */
 	public Permission getPermission(String key) {
 		return permissionMap.get(key);
@@ -112,7 +117,7 @@ public class PermissionService implements IPermissionService {
 	private void checkCache() {
 		synchronized (permissionClassesLock) {
 			// null-check with lock (valid check)
-			if(permissionClasses == null) {
+			if (permissionClasses == null) {
 				Set<IClassInfo> allKnownPermissions = getPermissionsFromInventory();
 				Set<String> excludePermissions = getPermissionsToExclude();
 				Set<Class<? extends Permission>> discoveredPermissions;
@@ -122,16 +127,16 @@ public class PermissionService implements IPermissionService {
 			}
 		}
 	}
-	
+
 	public void checkTranslations() {
-		getAllPermissionClasses()
-		.stream()
-		.forEach(permission -> {
-			checkTranslations(permission);
-		});
+		getAllPermissionClasses().stream()
+				.forEach(permission -> {
+					checkTranslations(permission);
+				});
 	}
 
-	private Set<Class<? extends Permission>> processPermission(Set<IClassInfo> allPermissions, Set<String> excludePermissions) {
+	private Set<Class<? extends Permission>> processPermission(Set<IClassInfo> allPermissions,
+			Set<String> excludePermissions) {
 		Set<Class<? extends Permission>> discoveredPermissions = new HashSet<>(allPermissions.size());
 
 		for (IClassInfo permInfo : allPermissions) {
@@ -144,11 +149,11 @@ public class PermissionService implements IPermissionService {
 					if (!excludePermissions.contains(name)) {
 						discoveredPermissions.add(permClass);
 
-						Permission permission = (Permission) Class.forName(permClass.getName()).newInstance();
+						Permission permission = (Permission) Class.forName(permClass.getName())
+								.newInstance();
 						permissionMap.put(name, permission);
 					}
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					LOG.warn("Unable to load permission: " + e.getLocalizedMessage());
 				}
 			}
@@ -158,38 +163,44 @@ public class PermissionService implements IPermissionService {
 	}
 
 	/**
-	 * @return Permission classes from class inventory. By default all direct subclasses of {@link Permission} and
-	 *         {@link BasicPermission} that are available in the {@link ClassInventory} are returned.
+	 * @return Permission classes from class inventory. By default all direct
+	 *         subclasses of {@link Permission} and {@link BasicPermission} that
+	 *         are available in the {@link ClassInventory} are returned.
 	 */
 	protected Set<IClassInfo> getPermissionsFromInventory() {
 		IClassInventory inv = ClassInventory.get();
-		//get BasicPermssion subclasses are not found directly, because jdk is not scanned by jandex.
+		// get BasicPermssion subclasses are not found directly, because jdk is
+		// not scanned by jandex.
 		Set<IClassInfo> classes = inv.getAllKnownSubClasses(Permission.class);
 		classes.addAll(inv.getAllKnownSubClasses(BasicPermission.class));
 		return classes;
 	}
 
 	/**
-	 * Checks whether the given class is a Permission class that should be visible to this service. The default
-	 * implementation checks if the class meets the following conditions:
+	 * Checks whether the given class is a Permission class that should be
+	 * visible to this service. The default implementation checks if the class
+	 * meets the following conditions:
 	 * <ul>
-	 * <li>class is instanciable (public, not abstract, not interface, not inner member type)
+	 * <li>class is instanciable (public, not abstract, not interface, not inner
+	 * member type)
 	 * <li>the name is accepted by {@link #acceptClassName(String)}
 	 * </ul>
 	 *
 	 * @param permInfo
-	 *          the class to be checked
-	 * @return Returns <code>true</code> if the class used by this service. <code>false</code> otherwise.
+	 *            the class to be checked
+	 * @return Returns <code>true</code> if the class used by this service.
+	 *         <code>false</code> otherwise.
 	 */
 	protected boolean acceptClass(IClassInfo permInfo) {
 		return permInfo.isInstanciable() && acceptClassName(permInfo.name());
 	}
 
 	/**
-	 * Checks whether the given class name is a potential permission class and used by this service.
+	 * Checks whether the given class name is a potential permission class and
+	 * used by this service.
 	 *
 	 * @param className
-	 *          the class name to be checked
+	 *            the class name to be checked
 	 * @return Returns <code>true</code> by default.
 	 */
 	protected boolean acceptClassName(String className) {
@@ -202,12 +213,12 @@ public class PermissionService implements IPermissionService {
 	private Set<String> getPermissionsToExclude() {
 		Set<String> excludeList = new HashSet<String>();
 		Arrays.asList(EXCLUDE_ARRAY)
-		.stream()
-		.forEach(permission -> {
-			if (StringUtility.hasText(permission)) {
-				excludeList.add(permission);
-			}
-		});
+				.stream()
+				.forEach(permission -> {
+					if (StringUtility.hasText(permission)) {
+						excludeList.add(permission);
+					}
+				});
 
 		return excludeList;
 	}

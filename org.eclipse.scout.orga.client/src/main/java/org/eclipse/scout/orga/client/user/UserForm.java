@@ -32,11 +32,13 @@ import org.eclipse.scout.orga.shared.user.UserFormData;
 public class UserForm extends AbstractForm {
 
 	public String getUserId() {
-		return getUserBox().getUserIdField().getValue();
+		return getUserBox().getUserIdField()
+				.getValue();
 	}
 
 	public void setUserId(String userId) {
-		getUserBox().getUserIdField().setValue(userId);
+		getUserBox().getUserIdField()
+				.setValue(userId);
 	}
 
 	@Override
@@ -215,7 +217,8 @@ public class UserForm extends AbstractForm {
 
 			UserFormData formData = new UserFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IUserService.class).load(formData);
+			formData = BEANS.get(IUserService.class)
+					.load(formData);
 			importFormData(formData);
 
 			getForm().setSubTitle(calculateSubTitle());
@@ -225,7 +228,8 @@ public class UserForm extends AbstractForm {
 		protected void execStore() {
 			UserFormData formData = new UserFormData();
 			exportFormData(formData);
-			BEANS.get(IUserService.class).store(formData);
+			BEANS.get(IUserService.class)
+					.store(formData);
 		}
 
 		@Override
@@ -248,7 +252,8 @@ public class UserForm extends AbstractForm {
 			getPasswordField().setMandatory(true);
 			UserFormData formData = new UserFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IUserService.class).load(formData);
+			formData = BEANS.get(IUserService.class)
+					.load(formData);
 			importFormData(formData);
 
 			getForm().setSubTitle(calculateSubTitle());
@@ -259,7 +264,8 @@ public class UserForm extends AbstractForm {
 			IUserService service = BEANS.get(IUserService.class);
 
 			String userId = getUserId();
-			if (BEANS.get(IUserService.class).exists(userId)) {
+			if (BEANS.get(IUserService.class)
+					.exists(userId)) {
 				throw new VetoException(TEXTS.get("AccountAlreadyExists", userId));
 			}
 

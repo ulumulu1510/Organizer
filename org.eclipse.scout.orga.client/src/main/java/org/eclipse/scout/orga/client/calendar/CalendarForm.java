@@ -83,39 +83,47 @@ public class CalendarForm extends AbstractForm {
 
 			public class Calendar extends AbstractCalendar {
 
-		        private final List<IMenu> mainMenus = new ArrayList<>();
-		        private final List<IMenu> calendarMenus = new ArrayList<>();
+				private final List<IMenu> mainMenus = new ArrayList<>();
+				private final List<IMenu> calendarMenus = new ArrayList<>();
 
-		        @Override
-		        protected void execInitCalendar() {
-		        	mainMenus.addAll(getForm().getRootGroupBox().getContextMenu().getChildActions());
-		        	ContextMenuListener listener = event -> {
-		        		if (ContextMenuEvent.TYPE_STRUCTURE_CHANGED == event.getType()) {
-		        			IContextMenu rootContextMenu = getForm().getRootGroupBox().getContextMenu();
-		        			calendarMenus.clear();
-		        			for (IMenu menu : event.getSource().getChildActions()) {
-		        				calendarMenus.add(OutlineMenuWrapper.wrapMenu(menu));
-		        			}
-		        			rootContextMenu.setChildActions(calendarMenus.isEmpty() ? mainMenus : calendarMenus);
-		        		}
-		        	};
-		          getCalendar().getContextMenu().addContextMenuListener(listener);
-		        }
+				@Override
+				protected void execInitCalendar() {
+					mainMenus.addAll(getForm().getRootGroupBox()
+							.getContextMenu()
+							.getChildActions());
+					ContextMenuListener listener = event -> {
+						if (ContextMenuEvent.TYPE_STRUCTURE_CHANGED == event.getType()) {
+							IContextMenu rootContextMenu = getForm().getRootGroupBox()
+									.getContextMenu();
+							calendarMenus.clear();
+							for (IMenu menu : event.getSource()
+									.getChildActions()) {
+								calendarMenus.add(OutlineMenuWrapper.wrapMenu(menu));
+							}
+							rootContextMenu.setChildActions(calendarMenus.isEmpty() ? mainMenus : calendarMenus);
+						}
+					};
+					getCalendar().getContextMenu()
+							.addContextMenuListener(listener);
+				}
 
-		        protected String getBookingId() {
-		        	CalendarComponent selectedComponent = getSelectedComponent();
+				protected String getBookingId() {
+					CalendarComponent selectedComponent = getSelectedComponent();
 					if (selectedComponent == null) {
 						return null;
 					}
 					ICalendarItem item = selectedComponent.getItem();
-					return item == null ? null : item.getItemId().toString();
-		        }
+					return item == null ? null : item.getItemId()
+							.toString();
+				}
 
 				@Order(1000)
 				public class BookingProvider extends AbstractCalendarItemProvider {
 					@Override
-					protected void execLoadItemsInBackground(IClientSession session, Date minDate, Date maxDate, Set<ICalendarItem> result) {
-						result.addAll(BEANS.get(ICalendarService.class).loadBookingsInInterval(minDate, maxDate));
+					protected void execLoadItemsInBackground(IClientSession session, Date minDate, Date maxDate,
+							Set<ICalendarItem> result) {
+						result.addAll(BEANS.get(ICalendarService.class)
+								.loadBookingsInInterval(minDate, maxDate));
 					}
 
 					@Order(2000)
@@ -148,7 +156,8 @@ public class CalendarForm extends AbstractForm {
 						protected void execAction() {
 							BookingForm bookingForm = new BookingForm();
 							bookingForm.addFormListener(new CalendarFormListener());
-							bookingForm.getBookingIdField().setValue(getBookingId());
+							bookingForm.getBookingIdField()
+									.setValue(getBookingId());
 							bookingForm.startModify();
 						}
 					}
@@ -163,7 +172,8 @@ public class CalendarForm extends AbstractForm {
 
 						@Override
 						protected void execAction() {
-							BEANS.get(IBookingService.class).delete(getBookingId());
+							BEANS.get(IBookingService.class)
+									.delete(getBookingId());
 							reloadCalendarItems();
 						}
 
@@ -179,7 +189,9 @@ public class CalendarForm extends AbstractForm {
 								return false;
 							}
 							ICalendarItem item = selectedComponent.getItem();
-							return item != null && ClientSession.get().getUserId().equals(item.getOwner());
+							return item != null && ClientSession.get()
+									.getUserId()
+									.equals(item.getOwner());
 						}
 					}
 				}
@@ -214,7 +226,8 @@ public class CalendarForm extends AbstractForm {
 
 		private BookingFormParam createFormParamFromSelectedDate() {
 			BookingFormParam param = null;
-			Date selectedDate = getCalendarField().getCalendar().getSelectedDate();
+			Date selectedDate = getCalendarField().getCalendar()
+					.getSelectedDate();
 			if (selectedDate != null) {
 				param = new BookingFormParam();
 				param.setDateFrom(selectedDate);
@@ -227,7 +240,8 @@ public class CalendarForm extends AbstractForm {
 	protected class CalendarFormListener implements FormListener {
 		@Override
 		public void formChanged(FormEvent e) {
-			if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm().isFormStored()) {
+			if (FormEvent.TYPE_CLOSED == e.getType() && e.getForm()
+					.isFormStored()) {
 				getCalendarField().reloadCalendarItems();
 			}
 		}

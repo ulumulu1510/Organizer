@@ -399,7 +399,8 @@ public class BookingForm extends AbstractForm {
 			setEnabledPermission(new UpdateBookingPermission());
 			BookingFormData formData = new BookingFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IBookingService.class).load(formData);
+			formData = BEANS.get(IBookingService.class)
+					.load(formData);
 			importFormData(formData);
 		}
 
@@ -407,7 +408,8 @@ public class BookingForm extends AbstractForm {
 		protected void execStore() {
 			BookingFormData formData = new BookingFormData();
 			exportFormData(formData);
-			BEANS.get(IBookingService.class).store(formData);
+			BEANS.get(IBookingService.class)
+					.store(formData);
 		}
 	}
 
@@ -418,11 +420,14 @@ public class BookingForm extends AbstractForm {
 			setEnabledPermission(new CreateBookingPermission());
 			BookingFormData formData = new BookingFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IBookingService.class).load(formData);
+			formData = BEANS.get(IBookingService.class)
+					.load(formData);
 			BookingFormParam param = ((BookingForm) this.getForm()).getParam();
 			if (param != null) {
-				formData.getDateFrom().setValue(param.getDateFrom());
-				formData.getDateTo().setValue(param.getDateTo());
+				formData.getDateFrom()
+						.setValue(param.getDateFrom());
+				formData.getDateTo()
+						.setValue(param.getDateTo());
 			}
 			importFormData(formData);
 		}
@@ -431,7 +436,8 @@ public class BookingForm extends AbstractForm {
 		protected void execStore() {
 			BookingFormData formData = new BookingFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IBookingService.class).store(formData);
+			formData = BEANS.get(IBookingService.class)
+					.store(formData);
 			importFormData(formData);
 		}
 	}

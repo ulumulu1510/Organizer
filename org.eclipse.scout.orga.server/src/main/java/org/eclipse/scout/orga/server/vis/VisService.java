@@ -18,17 +18,17 @@ public class VisService implements IVisService {
 
 	@Override
 	public Map<String, List<VisItem>> calculateUserItems(Collection<String> userIds, Date start, Date end) {
-		return BEANS.get(BookingService.class).getBookingsInInterval(start, end)
-			.filter(record -> userIds.contains(record.getUserId()))
-			.collect(Collectors.groupingBy(
-					record -> StringUtility.uppercaseFirst(record.getUserId()),
-					Collectors.mapping(this::itemize, Collectors.toList())
-			));
+		return BEANS.get(BookingService.class)
+				.getBookingsInInterval(start, end)
+				.filter(record -> userIds.contains(record.getUserId()))
+				.collect(Collectors.groupingBy(record -> StringUtility.uppercaseFirst(record.getUserId()),
+						Collectors.mapping(this::itemize, Collectors.toList())));
 	}
 
 	private VisItem itemize(BookingRecord record) {
 		Date dateFrom = record.getDateFrom();
-		long timeDelta = record.getDateTo().getTime() - dateFrom.getTime();
+		long timeDelta = record.getDateTo()
+				.getTime() - dateFrom.getTime();
 		long hours = Math.max(TimeUnit.MILLISECONDS.toHours(timeDelta), 1);
 		return new VisItem(dateFrom, hours);
 	}

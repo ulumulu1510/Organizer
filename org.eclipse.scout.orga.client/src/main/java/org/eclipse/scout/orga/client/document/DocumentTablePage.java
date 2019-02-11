@@ -37,10 +37,11 @@ public class DocumentTablePage extends AbstractPageWithTable<Table> {
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(IDocumentService.class).getDocumentTableData(filter, getBookingId()));
+		importPageData(BEANS.get(IDocumentService.class)
+				.getDocumentTableData(filter, getBookingId()));
 	}
 
-	public class Table extends AbstractDocumentTable  {
+	public class Table extends AbstractDocumentTable {
 		@Override
 		public IOutline getPageOutline() {
 			return getOutline();

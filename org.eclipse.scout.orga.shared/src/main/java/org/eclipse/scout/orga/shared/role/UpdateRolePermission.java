@@ -4,9 +4,9 @@ import java.security.BasicPermission;
 
 public class UpdateRolePermission extends BasicPermission {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  public UpdateRolePermission() {
-    super(UpdateRolePermission.class.getSimpleName());
-  }
+	public UpdateRolePermission() {
+		super(UpdateRolePermission.class.getSimpleName());
+	}
 }

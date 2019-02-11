@@ -16,7 +16,7 @@ import org.eclipse.scout.orga.shared.code.ApplicationCodeUtility;
  * <h3>{@link ServerSession}</h3>
  */
 public class ServerSession extends AbstractServerSession {
-	
+
 	public static final String SUPER_USER_ID = "system";
 
 	private static final long serialVersionUID = 1L;
@@ -44,12 +44,14 @@ public class ServerSession extends AbstractServerSession {
 	protected void execLoadSession() {
 		String userId = getUserId();
 
-		if(!SUPER_USER_ID.equals(userId)) {
-			userLocale = BEANS.get(UserService.class).getLocale(userId);			
+		if (!SUPER_USER_ID.equals(userId)) {
+			userLocale = BEANS.get(UserService.class)
+					.getLocale(userId);
 			ApplicationCodeUtility.reloadAll();
-			BEANS.get(TextService.class).invalidateCache();
-			
-			LOG.info("Created a new server session for '{}' with locale '{}'", userId, userLocale);			
+			BEANS.get(TextService.class)
+					.invalidateCache();
+
+			LOG.info("Created a new server session for '{}' with locale '{}'", userId, userLocale);
 		}
 	}
 }

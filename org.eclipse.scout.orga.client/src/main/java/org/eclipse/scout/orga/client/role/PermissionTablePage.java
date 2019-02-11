@@ -31,7 +31,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTable> 
 	}
 
 	public class PermissionTable extends AbstractPermissionTable {
-		
+
 		@Override
 		public IOutline getPageOutline() {
 			return getOutline();
@@ -50,6 +50,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTable> 
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(IRoleService.class).getPermissionTableData(filter));
+		importPageData(BEANS.get(IRoleService.class)
+				.getPermissionTableData(filter));
 	}
 }

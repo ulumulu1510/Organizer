@@ -60,7 +60,8 @@ public class DocumentService extends AbstractBaseService<Document, DocumentRecor
 			row.setId(document.getId());
 			row.setName(document.getName());
 			row.setType(document.getType());
-			row.setSize(document.getSize().toBigInteger());
+			row.setSize(document.getSize()
+					.toBigInteger());
 			row.setUser(document.getUserId());
 			row.setUploaded(DateTimeUtility.convertToDate(document.getUploaded()));
 			row.setActive(document.getActive());
@@ -78,21 +79,22 @@ public class DocumentService extends AbstractBaseService<Document, DocumentRecor
 		DocumentRecord document = new DocumentRecord(id, name, type, size, content, userId, uploaded, true);
 
 		store(id, document);
-		BEANS.get(BookingDocumentService.class).store(bookingId, new BookingDocumentRecord(bookingId, id));
+		BEANS.get(BookingDocumentService.class)
+				.store(bookingId, new BookingDocumentRecord(bookingId, id));
 	}
 
 	private String getDocumentType(String name) {
-        String type = IOUtility.getFileExtension(name);
-        return BEANS.get(FileCodeType.class).getCode(type) != null ? type : FileCodeType.UknownCode.ID;
+		String type = IOUtility.getFileExtension(name);
+		return BEANS.get(FileCodeType.class)
+				.getCode(type) != null ? type : FileCodeType.UknownCode.ID;
 	}
 
 	@Override
 	public List<? extends ILookupRow<String>> getLookupRows(boolean activeOnly) {
-		return getAll()
-                .stream()
-                .filter(document -> !activeOnly || (activeOnly && document.getActive()))
-                .map(document -> new LookupRow<>(document.getId(), document.getName()))
-                .collect(Collectors.toList());
+		return getAll().stream()
+				.filter(document -> !activeOnly || (activeOnly && document.getActive()))
+				.map(document -> new LookupRow<>(document.getId(), document.getName()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -100,11 +102,13 @@ public class DocumentService extends AbstractBaseService<Document, DocumentRecor
 		DocumentTable table = new DocumentTable();
 
 		forEachDocumentWithBookingId(bookingId, document -> {
-			org.eclipse.scout.orga.shared.booking.BookingFormData.DocumentTable.DocumentTableRowData row = table.addRow();
+			org.eclipse.scout.orga.shared.booking.BookingFormData.DocumentTable.DocumentTableRowData row = table
+					.addRow();
 			row.setId(document.getId());
 			row.setName(document.getName());
 			row.setType(document.getType());
-			row.setSize(document.getSize().toBigInteger());
+			row.setSize(document.getSize()
+					.toBigInteger());
 			row.setUser(document.getUserId());
 			row.setUploaded(DateTimeUtility.convertToDate(document.getUploaded()));
 			row.setActive(document.getActive());
@@ -114,14 +118,11 @@ public class DocumentService extends AbstractBaseService<Document, DocumentRecor
 	}
 
 	private void forEachDocumentWithBookingId(String bookingId, Consumer<? super DocumentRecord> consumer) {
-		getContext()
-        .selectFrom(getTable())
-        .whereExists(
-        		getContext()
-        		.select(BookingDocument.BOOKING_DOCUMENT.DOCUMENT_ID)
-        		.from(BookingDocument.BOOKING_DOCUMENT)
-        		.where(BookingDocument.BOOKING_DOCUMENT.BOOKING_ID.eq(bookingId)))
-        .stream()
-		.forEach(consumer);
+		getContext().selectFrom(getTable())
+				.whereExists(getContext().select(BookingDocument.BOOKING_DOCUMENT.DOCUMENT_ID)
+						.from(BookingDocument.BOOKING_DOCUMENT)
+						.where(BookingDocument.BOOKING_DOCUMENT.BOOKING_ID.eq(bookingId)))
+				.stream()
+				.forEach(consumer);
 	}
 }

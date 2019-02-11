@@ -23,7 +23,9 @@ public interface IDocumentService extends IService {
 
 	/**
 	 * Returns all documents as lookup rows.
-	 * @param activeOnly: restricts result set to active documents, if active is true
+	 * 
+	 * @param activeOnly:
+	 *            restricts result set to active documents, if active is true
 	 */
 	public List<? extends ILookupRow<String>> getLookupRows(boolean activeOnly);
 

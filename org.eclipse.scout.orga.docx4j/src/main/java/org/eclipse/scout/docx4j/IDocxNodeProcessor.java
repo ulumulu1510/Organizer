@@ -14,21 +14,23 @@ import javax.xml.bind.JAXBException;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 
 /**
- * Classes implementing this interface process matching document nodes found in different parts (i.e. headers, body,
- * footers).
+ * Classes implementing this interface process matching document nodes found in
+ * different parts (i.e. headers, body, footers).
  * 
  * @since 1.0.0
  */
 public interface IDocxNodeProcessor {
 
 	/**
-	 * Processes a docx4j document node. Implementors are required to return <code>true</code> whenever the docx4j
-	 * document structure has been changed.
+	 * Processes a docx4j document node. Implementors are required to return
+	 * <code>true</code> whenever the docx4j document structure has been
+	 * changed.
 	 * 
 	 * @param documentNode
-	 *          a document node typically selected by an xpath query from different document parts (headers, body,
-	 *          footers).
-	 * @return Returns <code>true</code> if the docx4j document has been changed.
+	 *            a document node typically selected by an xpath query from
+	 *            different document parts (headers, body, footers).
+	 * @return Returns <code>true</code> if the docx4j document has been
+	 *         changed.
 	 * @throws JAXBException
 	 * @throws ProcessingException
 	 */

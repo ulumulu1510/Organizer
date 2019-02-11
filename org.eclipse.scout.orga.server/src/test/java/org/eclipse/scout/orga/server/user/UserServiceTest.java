@@ -15,6 +15,6 @@ public class UserServiceTest {
 
 	@Test
 	public void dummyTest() {
-		// TODO [mzi] add test case		
+		// TODO [mzi] add test case
 	}
 }

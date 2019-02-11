@@ -112,16 +112,6 @@ public class TableDataInitializer extends TableUtility implements IDataInitializ
 	public static final TextRecord TEXT_USER_DE = new TextRecord(RoleTable.toTextKey(RoleTable.USER), Locale.GERMAN.toLanguageTag(), "Benutzer");
 	public static final TextRecord TEXT_GUEST_DE = new TextRecord(RoleTable.toTextKey(RoleTable.GUEST), Locale.GERMAN.toLanguageTag(), "Gast");
 
-	public static final BookingRecord BOOKING_VACATION = new BookingRecord("a4e8fea9-e646-4e8e-897f-5f3b1d961234", "Vacation", new Date(), new Date(), "Note 1", USER_ALICE.getUsername(), Boolean.TRUE);
-	public static final BookingRecord BOOKING_WORK_MON = new BookingRecord("a4e8fea9-e646-4e8e-897f-5f3b1d961235", "Work", new Date(), new Date(), "Work Note 1", USER_ROLE_RABBIT.getUsername(), Boolean.TRUE);
-	public static final BookingRecord BOOKING_WORK_TUE = new BookingRecord("a4e8fea9-e646-4e8e-897f-5f3b1d961236", "Work", new Date(), new Date(), "Work Note 2", USER_ROOT.getUsername(), Boolean.TRUE);
-	public static final BookingRecord BOOKING_WORK_WED = new BookingRecord("a4e8fea9-e646-4e8e-897f-5f3b1d961237", "Work", new Date(), new Date(), "Work Note 3", USER_ALICE.getUsername(), Boolean.TRUE);
-	public static final BookingRecord BOOKING_WORK_THU = new BookingRecord("a4e8fea9-e646-4e8e-897f-5f3b1d961238", "Work", new Date(), new Date(), "Work Note 4", USER_ROLE_RABBIT.getUsername(), Boolean.TRUE);
-	public static final BookingRecord BOOKING_WORK_FRI = new BookingRecord("a4e8fea9-e646-4e8e-897f-5f3b1d961239", "Work", new Date(), new Date(), "Work Note 5", USER_ROOT.getUsername(), Boolean.TRUE);
-
-
-	public static final BookingDocumentRecord BOOKING_DOCUMENT_ALICE_1 = new BookingDocumentRecord(BOOKING_VACATION.getId(), DOCUMENT_ALICE_1.getId());
-
 	//----------------------------------------------------------------------------------//
 	private int index;
 
@@ -259,12 +249,13 @@ public class TableDataInitializer extends TableUtility implements IDataInitializ
 			Instant from = dayOne.plus(days, ChronoUnit.DAYS);
 			for (int i = 0; i < users.length; i++) {
 				UserRecord user = users[i];
-				BookingRecord record = insertBookingRecord(i, from, user);
-				insert(ctx, record);
+				BookingRecord bookingRecord = insertBookingRecord(i, from, user);
+				BookingDocumentRecord documentRecord = new BookingDocumentRecord(bookingRecord.getId(), DOCUMENT_ALICE_1.getId());
+
+				insert(ctx, bookingRecord);
+				insert(ctx, documentRecord);
 			}
 		}
-
-		insert(ctx, BOOKING_DOCUMENT_ALICE_1);
 	}
 
 	private BookingRecord insertBookingRecord(int userNr, Instant from, UserRecord user) {
@@ -276,7 +267,7 @@ public class TableDataInitializer extends TableUtility implements IDataInitializ
 		long hoursAdded = (long) new Random().nextInt(6) + userNr;
 		Date dateTo = Date.from(from.plus(hoursAdded, ChronoUnit.HOURS));
 		String note = String.format("Note %s %s", userName, dateDesc);
-		return new BookingRecord(id, description, dateFrom, dateTo, note, userName, Boolean.TRUE);
+		return new BookingRecord(id, description, dateFrom, dateTo, note, Boolean.TRUE, userName);
 	}
 
 	private void insert(DSLContext ctx, org.jooq.Record record) {

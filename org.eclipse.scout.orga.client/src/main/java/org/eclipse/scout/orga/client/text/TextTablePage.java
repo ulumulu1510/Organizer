@@ -46,16 +46,17 @@ public class TextTablePage extends AbstractPageWithTable<Table> {
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(ITextService.class).getTextTableData(filter));
-	}	
-	
+		importPageData(BEANS.get(ITextService.class)
+				.getTextTableData(filter));
+	}
+
 	public class Table extends AbstractExportableTable {
-		
+
 		@Override
 		public IOutline getPageOutline() {
 			return getOutline();
 		}
-		
+
 		@Order(1000)
 		public class TranslateMenu extends AbstractMenu {
 			@Override
@@ -109,7 +110,7 @@ public class TextTablePage extends AbstractPageWithTable<Table> {
 		protected void execRowAction(ITableRow row) {
 			getMenuByClass(TranslateMenu.class).execAction();
 		}
-		
+
 		@Order(1000)
 		public class KeyColumn extends AbstractStringColumn {
 
@@ -140,7 +141,7 @@ public class TextTablePage extends AbstractPageWithTable<Table> {
 			protected int getConfiguredWidth() {
 				return 100;
 			}
-			
+
 			@Override
 			protected Class<? extends ICodeType<?, String>> getConfiguredCodeType() {
 				return LocaleCodeType.class;

@@ -35,7 +35,7 @@ public class VisFormData extends AbstractFormData {
 		return getFieldByClass(UserListBox.class);
 	}
 
-	@ClassId("560592b7-487d-4044-b3ca-b409c3446408-formdata")
+	@ClassId("d7d287f6-f504-4db3-9b3a-763bdbce88db-formdata")
 	public static class DateFrom extends AbstractValueFieldData<Date> {
 
 		private static final long serialVersionUID = 1L;

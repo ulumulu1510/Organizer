@@ -29,7 +29,7 @@ public class TextServiceTest {
 		service = BEANS.get(TextService.class);
 		Assert.assertNotNull("Text service could not be resolved", service);
 	}
-	
+
 	@Test
 	public void testGetAll() {
 		List<TextRecord> texts = service.getAll();
@@ -49,14 +49,13 @@ public class TextServiceTest {
 		boolean foundText = false;
 		boolean foundTextGerman = false;
 
-		for(TextRecord text: texts) {
+		for (TextRecord text : texts) {
 			String textKey = text.getKey();
 			String textLocale = text.getLocale();
 
-			if(textKey.equals(rootText.getKey()) && textLocale.equals(rootText.getLocale())) {
+			if (textKey.equals(rootText.getKey()) && textLocale.equals(rootText.getLocale())) {
 				foundText = true;
-			}
-			else if(textKey.equals(rootTextGerman.getKey()) && textLocale.equals(rootTextGerman.getLocale())) {
+			} else if (textKey.equals(rootTextGerman.getKey()) && textLocale.equals(rootTextGerman.getLocale())) {
 				foundTextGerman = true;
 			}
 		}

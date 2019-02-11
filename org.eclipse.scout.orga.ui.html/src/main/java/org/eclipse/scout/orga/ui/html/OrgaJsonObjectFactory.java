@@ -9,11 +9,11 @@ import org.eclipse.scout.rt.ui.html.json.IJsonAdapter;
 @Replace
 public class OrgaJsonObjectFactory extends org.eclipse.scout.rt.ui.html.JsonObjectFactory {
 
-  @Override
-  public IJsonAdapter<?> createJsonAdapter(Object model, IUiSession session, String id, IJsonAdapter<?> parent) {
-    if (model instanceof IVisField) {
-      return new JsonVisField<>((IVisField) model, session, id, parent);
-    }
-    return super.createJsonAdapter(model, session, id, parent);
-  }
+	@Override
+	public IJsonAdapter<?> createJsonAdapter(Object model, IUiSession session, String id, IJsonAdapter<?> parent) {
+		if (model instanceof IVisField) {
+			return new JsonVisField<>((IVisField) model, session, id, parent);
+		}
+		return super.createJsonAdapter(model, session, id, parent);
+	}
 }

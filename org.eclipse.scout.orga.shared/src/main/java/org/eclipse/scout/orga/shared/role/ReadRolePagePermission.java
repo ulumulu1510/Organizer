@@ -4,10 +4,10 @@ import java.security.BasicPermission;
 
 public class ReadRolePagePermission extends BasicPermission {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  public ReadRolePagePermission() {
-    super(ReadRolePagePermission.class.getSimpleName());
-  }
+	public ReadRolePagePermission() {
+		super(ReadRolePagePermission.class.getSimpleName());
+	}
 
 }

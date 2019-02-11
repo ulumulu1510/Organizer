@@ -163,7 +163,8 @@ public class RoleForm extends AbstractForm {
 
 			RoleFormData formData = new RoleFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IRoleService.class).load(formData);
+			formData = BEANS.get(IRoleService.class)
+					.load(formData);
 			importFormData(formData);
 
 			getForm().setSubTitle(calculateSubTitle());
@@ -173,7 +174,8 @@ public class RoleForm extends AbstractForm {
 		protected void execStore() {
 			RoleFormData formData = new RoleFormData();
 			exportFormData(formData);
-			BEANS.get(IRoleService.class).store(formData);
+			BEANS.get(IRoleService.class)
+					.store(formData);
 		}
 
 		@Override
@@ -195,7 +197,8 @@ public class RoleForm extends AbstractForm {
 
 			RoleFormData formData = new RoleFormData();
 			exportFormData(formData);
-			formData = BEANS.get(IRoleService.class).load(formData);
+			formData = BEANS.get(IRoleService.class)
+					.load(formData);
 			importFormData(formData);
 
 			getForm().setSubTitle(calculateSubTitle());
@@ -206,7 +209,8 @@ public class RoleForm extends AbstractForm {
 			IRoleService service = BEANS.get(IRoleService.class);
 
 			String role = getRoleId();
-			if (BEANS.get(IRoleService.class).exists(role)) {
+			if (BEANS.get(IRoleService.class)
+					.exists(role)) {
 				throw new VetoException(TEXTS.get("RoleAlreadyExists", role));
 			}
 

@@ -21,26 +21,26 @@ public class DownloadUtility {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DownloadUtility.class);
 
-	private DownloadUtility() { }
+	private DownloadUtility() {
+	}
 
 	public static void download(File file) {
 		try {
-			byte [] content = Files.readAllBytes(file.toPath());
+			byte[] content = Files.readAllBytes(file.toPath());
 			download(file.getName(), content);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOG.error("Failed to read file content from " + file.getAbsolutePath(), e);
 		}
 	}
 
-	public static void download(String name, byte [] content) {
+	public static void download(String name, byte[] content) {
 		download(new BinaryResource(name, content));
 	}
 
 	public static void download(BinaryResource resource) {
 		ClientSessionProvider.currentSession()
-		.getDesktop()
-		.openUri(resource, OpenUriAction.DOWNLOAD);
+				.getDesktop()
+				.openUri(resource, OpenUriAction.DOWNLOAD);
 	}
 
 	public static void upload(TransferObject t, String bookingId) {
@@ -50,18 +50,17 @@ public class DownloadUtility {
 					addFile(resource, bookingId);
 				}
 			}
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw new ProcessingException(e.getMessage(), e);
 		}
 	}
 
 	private static void addFile(BinaryResource file, String bookingId) {
-    	String name = file.getFilename();
-    	String username = ClientSession.get().getUserId();
-    	byte [] content = file.getContent();
+		String name = file.getFilename();
+		String username = ClientSession.get().getUserId();
+		byte[] content = file.getContent();
 
-    	BEANS.get(IDocumentService.class).store(name, content, username, bookingId);
-    }
+		BEANS.get(IDocumentService.class).store(name, content, username, bookingId);
+	}
 
 }

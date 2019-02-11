@@ -7,8 +7,8 @@ import org.eclipse.scout.rt.shared.TunnelToServer;
 @TunnelToServer
 public interface IUserPreferenceService {
 
-    Properties load(String userId, String node);
+	Properties load(String userId, String node);
 
-    void store(String userId, String node, Properties prefs);
+	void store(String userId, String node, Properties prefs);
 
 }

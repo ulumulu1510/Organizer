@@ -77,7 +77,8 @@ public abstract class AbstractUserBoxData extends AbstractFormFieldData {
 	}
 
 	/**
-	 * TODO [everyone] Duplicate names 'FirstName'. Rename property or form field.
+	 * TODO [everyone] Duplicate names 'FirstName'. Rename property or form
+	 * field.
 	 */
 	public static class FirstName extends AbstractValueFieldData<String> {
 
@@ -90,7 +91,8 @@ public abstract class AbstractUserBoxData extends AbstractFormFieldData {
 	}
 
 	/**
-	 * TODO [everyone] Duplicate names 'LastName'. Rename property or form field.
+	 * TODO [everyone] Duplicate names 'LastName'. Rename property or form
+	 * field.
 	 */
 	public static class LastName extends AbstractValueFieldData<String> {
 

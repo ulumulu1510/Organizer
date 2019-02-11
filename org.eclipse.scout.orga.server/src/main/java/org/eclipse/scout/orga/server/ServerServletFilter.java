@@ -34,9 +34,12 @@ public class ServerServletFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		m_trivialAccessController = BEANS.get(TrivialAccessController.class)
 				.init(new TrivialAuthConfig().withExclusionFilter(filterConfig.getInitParameter("filter-exclude")));
-	    m_userAuthenticator = BEANS.get(UserAuthenticator.class).init();
-		m_tunnelAccessController = BEANS.get(ServiceTunnelAccessTokenAccessController.class).init();
-		m_developmentAccessController = BEANS.get(DevelopmentAccessController.class).init();
+		m_userAuthenticator = BEANS.get(UserAuthenticator.class)
+				.init();
+		m_tunnelAccessController = BEANS.get(ServiceTunnelAccessTokenAccessController.class)
+				.init();
+		m_developmentAccessController = BEANS.get(DevelopmentAccessController.class)
+				.init();
 	}
 
 	@Override
@@ -48,10 +51,10 @@ public class ServerServletFilter implements Filter {
 		if (m_trivialAccessController.handle(req, resp, chain)) {
 			return;
 		}
-		
-	    if (m_userAuthenticator.handle(req, resp)) {
-	        return;
-	      }
+
+		if (m_userAuthenticator.handle(req, resp)) {
+			return;
+		}
 
 		if (m_tunnelAccessController.handle(req, resp, chain)) {
 			return;
