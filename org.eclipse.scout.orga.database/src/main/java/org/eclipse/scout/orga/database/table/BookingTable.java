@@ -20,15 +20,19 @@ public class BookingTable extends AbstractCoreTable {
 
 	@Override
 	public String createSQLInternal() {
-		return getContext().createTable(getName())
+		return getContext()
+				.createTable(getName())
 				.column(ID, TYPE_ID)
 				.column(DESCRIPTION, TYPE_STRING_M)
 				.column(DATE_FROM, TYPE_DATE_TIME)
 				.column(DATE_TO, TYPE_DATE_TIME)
 				.column(NOTE, TYPE_STRING_XL)
-				.column(ACTIVE, TYPE_BOOLEAN)
 				// foreign key to user
-				.column(USER_ID, TYPE_ID_OPTIONAL).constraints(DSL.constraint(getPKName()).primaryKey(ID)).getSQL();
+				.column(USER_ID, TYPE_ID_OPTIONAL)
+				.column(ACTIVE, TYPE_BOOLEAN)
+				.constraints(
+						DSL.constraint(getPKName()).primaryKey(ID))
+				.getSQL();
 	}
 
 	@Override

@@ -18,43 +18,46 @@ orga.VisField = function() {
 scout.inherits(orga.VisField, scout.FormField);
 
 orga.VisField.prototype._render = function() {
-	this.addContainer(this.$parent, 'vis');
+	this.addContainer(this.$parent, 'vis-field');
+	this.addLabel();
+	this.addMandatoryIndicator();
 	let graphDiv = this.$parent.appendDiv('graph2d');
 	this.addField(graphDiv);
-	this.calculatePropertiesAndGraph();
+	this.addStatus();
+	this._calculatePropertiesAndGraph();
 };
 
 // The following three methods _render{fieldName} are called automatically after the property
 // has been set through the JsonVisField.class
 orga.VisField.prototype._renderUsers = function(model) {
-	this.calculatePropertiesAndGraph();
+	this._calculatePropertiesAndGraph();
 };
 
 orga.VisField.prototype._renderStart = function(model) {
-	this.calculatePropertiesAndGraph();
+	this._calculatePropertiesAndGraph();
 };
 
 orga.VisField.prototype._renderEnd = function(model) {
-	this.calculatePropertiesAndGraph();
+	this._calculatePropertiesAndGraph();
 };
 
-orga.VisField.prototype.calculatePropertiesAndGraph = function() {
-	this.calculateInternals();
+orga.VisField.prototype._calculatePropertiesAndGraph = function() {
+	this._calculateInternals();
 	if (this.graph2d) {
 		this.graph2d.destroy();
 	}
 	this.graph2d = new vis.Graph2d(this.$field[0], this.items, this.groups, this.options);
 };
 
-orga.VisField.prototype.calculateInternals = function() {
-	this.initializeFields();
-	this.calculateTotal();
-	this.calculateGroups();
-	this.calculateItems();
-	this.calculateOptions();
+orga.VisField.prototype._calculateInternals = function() {
+	this._initializeFields();
+	this._calculateTotal();
+	this._calculateGroups();
+	this._calculateItems();
+	this._calculateOptions();
 };
 
-orga.VisField.prototype.initializeFields = function() {
+orga.VisField.prototype._initializeFields = function() {
 	if (!this.users) {
 		this.users = {};
 	}
@@ -65,7 +68,7 @@ orga.VisField.prototype.initializeFields = function() {
 	this.items = [];
 };
 
-orga.VisField.prototype.calculateTotal = function() {
+orga.VisField.prototype._calculateTotal = function() {
 	Object.values(this.users).forEach(items => {
 		items.forEach(item => {
 			let max = this.total[item.x];
@@ -83,31 +86,31 @@ orga.VisField.prototype.calculateTotal = function() {
 	});
 };
 
-orga.VisField.prototype.calculateGroups = function() {
+orga.VisField.prototype._calculateGroups = function() {
 	let groupId = 0;
-	for (let user in this.users) {
+	Object.keys(this.users).forEach(user => {
 		this.userGroups[user] = groupId;
 		this.groups.add({
 			id: groupId++,
 			content: user,
-			options: this.isUserTotal(user) ? {excludeFromLegend: true} : {}
+			options: this._isUserTotal(user) ? {excludeFromLegend: true} : {}
 		});
-	}
+	});
 };
 
-orga.VisField.prototype.calculateItems = function() {
+orga.VisField.prototype._calculateItems = function() {
 	Object.entries(this.users).forEach(([user, items]) => {
 		let id = this.userGroups[user];
 		items.forEach(item => this.items.push({
 			x: item.x,
 			y: item.y,
 			group: id,
-			label: this.calculateTotalLabel(item, user)
+			label: this._calculateTotalLabel(item, user)
 		}));
 	});
 };
 
-orga.VisField.prototype.calculateOptions = function() {
+orga.VisField.prototype._calculateOptions = function() {
 	this.options = {
 			style: 'bar',
 			stack: true,
@@ -138,20 +141,20 @@ orga.VisField.prototype.calculateOptions = function() {
 };
 
 
-orga.VisField.prototype.calculateTotalLabel = function(item, user) {
+orga.VisField.prototype._calculateTotalLabel = function(item, user) {
 	return {
 		// Use pseudo User 'Total' to display a total at the bottom of the bar
-		content: this.isUserTotal(user) ? this.total[item.x] + 'h' : '',
+		content: this._isUserTotal(user) ? this.total[item.x] + 'h' : '',
 		yOffset: -8 ,
-		xOffset: this.offset(item.x)
+		xOffset: this._offset(item.x)
 	};
 };
 
-orga.VisField.prototype.isUserTotal = function(user) {
+orga.VisField.prototype._isUserTotal = function(user) {
 	return user === 'Total';
 };
 
-orga.VisField.prototype.offset = function(key) {
+orga.VisField.prototype._offset = function(key) {
 	let ret = -6;
 	let max = this.total[key];
 	if (max >= 10) {

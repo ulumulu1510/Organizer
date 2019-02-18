@@ -244,13 +244,13 @@ public class TableDataInitializer extends TableUtility implements IDataInitializ
 
 	private void insertSampleBookings(DSLContext ctx) {
 		UserRecord[] users = {USER_ALICE, USER_RABBIT, USER_ROOT};
-		Instant dayOne = Year.now().atMonth(1).atDay(1).atTime(8, 0).atZone(ZoneId.systemDefault()).toInstant();
-		for (int days = 0; days < 90; days++) {
+		Instant dayOne = YearMonth.now().minusMonths(2).atDay(1).atTime(8, 0).atZone(ZoneId.systemDefault()).toInstant();
+		for (int days = 0; days < 120; days++) {
 			Instant from = dayOne.plus(days, ChronoUnit.DAYS);
 			for (int i = 0; i < users.length; i++) {
 				UserRecord user = users[i];
-				BookingRecord bookingRecord = insertBookingRecord(i, from, user);
-				BookingDocumentRecord documentRecord = new BookingDocumentRecord(bookingRecord.getId(), DOCUMENT_ALICE_1.getId());
+				BookingRecord bookingRecord = createBookingRecord(i, from, user);
+				BookingDocumentRecord documentRecord = createBookingDocumentRecord(bookingRecord);
 
 				insert(ctx, bookingRecord);
 				insert(ctx, documentRecord);
@@ -258,7 +258,7 @@ public class TableDataInitializer extends TableUtility implements IDataInitializ
 		}
 	}
 
-	private BookingRecord insertBookingRecord(int userNr, Instant from, UserRecord user) {
+	private BookingRecord createBookingRecord(int userNr, Instant from, UserRecord user) {
 		String id = createId();
 		String userName = user.getUsername();
 		Date dateFrom = Date.from(from);
@@ -267,7 +267,14 @@ public class TableDataInitializer extends TableUtility implements IDataInitializ
 		long hoursAdded = (long) new Random().nextInt(6) + userNr;
 		Date dateTo = Date.from(from.plus(hoursAdded, ChronoUnit.HOURS));
 		String note = String.format("Note %s %s", userName, dateDesc);
-		return new BookingRecord(id, description, dateFrom, dateTo, note, Boolean.TRUE, userName);
+		return new BookingRecord(id, description, dateFrom, dateTo, note, userName, Boolean.TRUE);
+	}
+
+	private BookingDocumentRecord createBookingDocumentRecord(BookingRecord bookingRecord) {
+		String bookingRecordId = createId();
+		String bookingId = bookingRecord.getId();
+		String documentid = DOCUMENT_ALICE_1.getId();
+		return new BookingDocumentRecord(bookingRecordId, bookingId, documentid);
 	}
 
 	private void insert(DSLContext ctx, org.jooq.Record record) {

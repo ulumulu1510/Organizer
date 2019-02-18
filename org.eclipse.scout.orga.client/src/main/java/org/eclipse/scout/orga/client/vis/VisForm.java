@@ -217,6 +217,7 @@ public class VisForm extends AbstractForm {
 
 		@Order(2000)
 		public class VisualizationBox extends AbstractGroupBox {
+
 			@Override
 			protected String getConfiguredLabel() {
 				return TEXTS.get("Visualization");
@@ -224,9 +225,10 @@ public class VisForm extends AbstractForm {
 
 			@Order(1000)
 			public class VisField extends AbstractVisField {
+
 				@Override
-				protected String getConfiguredLabel() {
-					return TEXTS.get("Vis");
+				protected boolean getConfiguredLabelVisible() {
+					return false;
 				}
 
 				@Override

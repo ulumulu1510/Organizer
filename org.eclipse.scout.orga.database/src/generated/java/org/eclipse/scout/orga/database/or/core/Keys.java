@@ -84,7 +84,7 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<BookingRecord> PK_BOOKING = createUniqueKey(Booking.BOOKING, "PK_BOOKING", Booking.BOOKING.ID);
-        public static final UniqueKey<BookingDocumentRecord> PK_BOOKING_DOCUMENT = createUniqueKey(BookingDocument.BOOKING_DOCUMENT, "PK_BOOKING_DOCUMENT", BookingDocument.BOOKING_DOCUMENT.BOOKING_ID);
+        public static final UniqueKey<BookingDocumentRecord> PK_BOOKING_DOCUMENT = createUniqueKey(BookingDocument.BOOKING_DOCUMENT, "PK_BOOKING_DOCUMENT", BookingDocument.BOOKING_DOCUMENT.BOOKING_DOCUMENT_ID);
         public static final UniqueKey<CodeRecord> PK_CODE = createUniqueKey(Code.CODE, "PK_CODE", Code.CODE.ID, Code.CODE.TYPE_ID);
         public static final UniqueKey<DocumentRecord> PK_DOCUMENT = createUniqueKey(Document.DOCUMENT, "PK_DOCUMENT", Document.DOCUMENT.ID);
         public static final UniqueKey<PersonRecord> PK_PERSON = createUniqueKey(Person.PERSON, "PK_PERSON", Person.PERSON.ID);
